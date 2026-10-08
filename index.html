@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>街头篮球抽奖模拟器</title>
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+<style>
+  /* ============================================================
+     主题变量（默认深色；html[data-theme="light"] 为浅色）
+     ============================================================ */
+  :root {
+    color-scheme: dark;
+    --bg: #0b0d12;
+    --bg-glow: #1a2033;
+    --panel: #14171f;
+    --card: #171a22;
+    --border: #262b37;
+    --border-soft: #1e2330;
+    --line-strong: #38415a;
+    --hover-border: #3a445c;
+    --orange-border: #4a3a20;
+    --input-bg: #0e1119;
+    --input-border: #2a3142;
+    --modal-bg: #12151d;
+    --soft: #141822;
+    --soft-hover: #1a1d26;
+    --chip: #171b26;
+    --chip-border: #2a3040;
+    --head: #1a1e29;
+    --toast-bg: #1b2130;
+    --toast-text: #e6ebf5;
+    --code-border: #232a38;
+    --code-text: #9fd0ff;
+    --logo-a: #23293a;
+    --logo-b: #14171f;
+    --logo-border: #2c3346;
+    --logo-shadow: 0 6px 18px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06);
+    --scroll: #2c3346;
+    --mask: rgba(4, 6, 10, .74);
+    --modal-shadow: 0 24px 70px rgba(0, 0, 0, .65);
+    --text: #eef1f6;
+    --text-2: #c6cddc;
+    --dim: #8a92a3;
+    --dim-2: #565e70;
+    --muted: #aeb6c6;
+    --orange: #ff9a1f;
+    --orange-hi: #ffb84d;
+    --legend: #ffb02e;
+    --unique: #b57bff;
+    --senior: #4da3ff;
+    --common: #9aa3b2;
+    --prize-common-bg: #161923;
+    --prize-common-bd: #262b37;
+    --prize-common-badge: #2b3140;
+    --prize-common-badge-t: #9aa3b2;
+    --prize-senior-bg: linear-gradient(170deg, #14243a, #131722 65%);
+    --prize-senior-bd: #2b4d78;
+    --prize-unique-bg: linear-gradient(170deg, #251840, #161226 65%);
+    --prize-unique-bd: #6b3fb8;
+    --prize-legend-bg: linear-gradient(170deg, #3a2607, #1c1409 65%);
+    --prize-legend-bd: #a06a15;
+    --prize-red-bg: linear-gradient(170deg, #3a1416, #1e1012 65%);
+    --prize-red-bd: #a83a3a;
+    --stat-hit-bg: linear-gradient(150deg, #33220d, #1c130a 70%);
+    --stat-hit-bd: #7a4d15;
+    --stat-hit-k: #caa15c;
+    --disabled-bg: #2b3140;
+    --disabled-t: #6b7488;
+    --gold-text: #ffd27a;
+    --ok: #5fd39a;
+    --warn: #e2b453;
+    --err: #ff7a7a;
+    --blue-text: #7fbcff;
+  }
+
+  [data-theme="light"] {
+    color-scheme: light;
+    --bg: #eef1f7;
+    --bg-glow: #ffffff;
+    --panel: #ffffff;
+    --card: #ffffff;
+    --border: #e0e5ef;
+    --border-soft: #eef1f7;
+    --line-strong: #ccd4e2;
+    --hover-border: #bfc8da;
+    --orange-border: #f0c088;
+    --input-bg: #ffffff;
+    --input-border: #d9dfeb;
+    --modal-bg: #ffffff;
+    --soft: #f5f7fc;
+    --soft-hover: #edf1f9;
+    --chip: #ffffff;
+    --chip-border: #dde3ee;
+    --head: #f2f5fb;
+    --toast-bg: #2b3140;
+    --toast-text: #eef1f6;
+    --code-border: #dbe2ee;
+    --code-text: #1668c9;
+    --logo-a: #ffffff;
+    --logo-b: #eef1f7;
+    --logo-border: #e0e5ef;
+    --logo-shadow: 0 6px 18px rgba(30,40,60,.14), inset 0 1px 0 rgba(255,255,255,.7);
+    --scroll: #c8d0e0;
+    --mask: rgba(24, 32, 48, .42);
+    --modal-shadow: 0 24px 70px rgba(30, 40, 60, .22);
+    --text: #1a1f2b;
+    --text-2: #47506a;
+    --dim: #6b7488;
+    --dim-2: #6b7488;
+    --muted: #5b6478;
+    --orange-hi: #b35f00;
+    --legend: #a06a15;
+    --unique: #7b3fc4;
+    --senior: #1f6fd0;
+    --common: #6b7488;
+    --prize-common-bg: #f7f8fc;
+    --prize-common-bd: #e4e8f1;
+    --prize-common-badge: #e7ebf3;
+    --prize-common-badge-t: #5b6478;
+    --prize-senior-bg: linear-gradient(170deg, #e6f0ff, #f8fbff 65%);
+    --prize-senior-bd: #a9cdf5;
+    --prize-unique-bg: linear-gradient(170deg, #f0e8ff, #fbf8ff 65%);
+    --prize-unique-bd: #c3a6f0;
+    --prize-legend-bg: linear-gradient(170deg, #fff2d6, #fffbf2 65%);
+    --prize-legend-bd: #e6b25c;
+    --prize-red-bg: linear-gradient(170deg, #ffe4e4, #fff8f8 65%);
+    --prize-red-bd: #e79a9a;
+    --stat-hit-bg: linear-gradient(150deg, #fff1d3, #fffbf2 70%);
+    --stat-hit-bd: #e6b25c;
+    --stat-hit-k: #a06a15;
+    --disabled-bg: #e7ebf3;
+    --disabled-t: #98a1b5;
+    --gold-text: #a06a15;
+    --ok: #0f7a4a;
+    --warn: #a06a15;
+    --err: #c53030;
+    --blue-text: #1f6fd0;
+  }
+  /* 浅色下金色标题加深，保证可读 */
+  [data-theme="light"] h1 {
+    background: linear-gradient(180deg, #f2a12a, #d97706);
+    -webkit-background-clip: text; background-clip: text;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+                 "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background:
+      radial-gradient(1200px 500px at 50% -200px, var(--bg-glow) 0%, transparent 60%),
+      var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.55;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 620px; margin: 0 auto; padding: 26px 16px 70px; }
+
+  /* ===== 头部 ===== */
+  header { text-align: center; margin-bottom: 14px; }
+  .logo {
+    width: 52px; height: 52px; margin: 0 auto 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 30px;
+    background: linear-gradient(160deg, var(--logo-a), var(--logo-b));
+    border: 1px solid var(--logo-border); border-radius: 16px;
+    box-shadow: var(--logo-shadow);
+  }
+  h1 {
+    margin: 0; font-size: 24px; font-weight: 800; letter-spacing: 1px;
+    background: linear-gradient(180deg, #ffe08a, #ff9a1f);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-shadow: 0 0 26px rgba(255,154,31,.25);
+  }
+  .sub { margin: 4px 0 0; color: var(--dim); font-size: 12px; letter-spacing: 2px; }
+
+  /* ===== 钱包（游戏货币） ===== */
+  .wallet {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 10px;
+    margin: 16px 0 28px;
+  }
+  .cur {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 5px 7px 5px 14px; font-size: 13px;
+  }
+  .cur .cur-ic { font-size: 15px; }
+  .cur .cur-name { color: var(--dim); }
+  .cur .cur-val {
+    color: var(--gold-text); font-weight: 700; font-variant-numeric: tabular-nums;
+    min-width: 34px; text-align: right;
+  }
+  .cur .cur-buy {
+    margin-left: 5px; padding: 4px 13px; font-size: 12px; cursor: pointer;
+    font-family: inherit; color: #3d2400; font-weight: 700;
+    background: linear-gradient(180deg, #ffb02e, #ff8a00);
+    border: none; border-radius: 999px;
+    box-shadow: 0 2px 8px rgba(255,138,0,.3); transition: filter .15s, transform .08s;
+  }
+  .cur .cur-buy:hover { filter: brightness(1.06); }
+  .cur .cur-buy:active { transform: scale(.95); }
+
+  /* ===== 累计统计卡 ===== */
+  .stats-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;
+  }
+  .stat {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 12px 12px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .stat .v { font-size: 27px; font-weight: 800; line-height: 1.15; font-variant-numeric: tabular-nums; }
+  .stat .k { font-size: 12px; color: var(--dim); margin-top: 3px; }
+  .stat.hit {
+    background: var(--stat-hit-bg);
+    border-color: var(--stat-hit-bd);
+    box-shadow: inset 0 1px 0 rgba(255,180,60,.12), 0 4px 16px rgba(255,140,0,.08);
+  }
+  .stat.hit .v { color: var(--legend); text-shadow: 0 0 18px rgba(255,170,40,.35); }
+  .stat.hit .k { color: var(--stat-hit-k); }
+  .stat .dot { color: var(--legend); margin-right: 4px; font-size: 10px; }
+  .stat .extra { font-size: 11px; color: var(--dim); margin-top: 2px; }
+  .stat .extra b { color: var(--text-2); font-weight: 600; }
+
+  /* ===== 抽奖按钮 ===== */
+  .draw-btns { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 14px; }
+  .draw-btn {
+    border: none; cursor: pointer; border-radius: 14px;
+    padding: 13px 4px 11px; color: #fff; font-family: inherit;
+    background: linear-gradient(180deg, #ffb02e 0%, #ff8a00 100%);
+    box-shadow: 0 6px 18px rgba(255,138,0,.28), inset 0 1px 0 rgba(255,255,255,.35);
+    transition: transform .08s ease, filter .15s ease;
+    text-align: center;
+  }
+  .draw-btn:hover { filter: brightness(1.06); }
+  .draw-btn:active { transform: scale(.96); }
+  .draw-btn:disabled { filter: grayscale(.5) brightness(.7); cursor: wait; }
+  .draw-btn .t { display: block; font-size: 18px; font-weight: 800; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(140,60,0,.4); }
+  .draw-btn .s { display: block; font-size: 11px; margin-top: 2px; color: rgba(255,255,255,.85); }
+  .draw-btn.alt {
+    background: linear-gradient(180deg, #ff9a1f 0%, #f06f00 100%);
+  }
+
+  /* ===== 本次结果摘要 ===== */
+  .summary {
+    margin-top: 14px; font-size: 13px; color: var(--text-2);
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 10px 14px; line-height: 1.7;
+  }
+  .summary:empty { display: none; }
+  .q-传说 { color: var(--legend); font-weight: 600; }
+  .q-唯一 { color: var(--unique); font-weight: 600; }
+  .q-高级 { color: var(--senior); font-weight: 600; }
+  .q-普通 { color: var(--common); font-weight: 600; }
+  .hit-tag { color: var(--gold-text); }
+  .hit-tag.u { color: var(--unique); }
+  .none-rare { color: var(--dim); }
+
+  /* ===== 工具条 ===== */
+  .toolbar { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .toolbar button {
+    flex: 1; padding: 8px 6px; font-size: 12.5px; cursor: pointer;
+    color: var(--muted); background: var(--panel);
+    border: 1px solid var(--border); border-radius: 10px; font-family: inherit;
+    transition: all .15s;
+  }
+  .toolbar button:hover { color: var(--orange-hi); border-color: var(--orange-border); }
+  .toolbar button.custom { color: var(--orange-hi); border-color: var(--orange-border); }
+  details.more { margin-top: 10px; }
+  details.more summary {
+    cursor: pointer; font-size: 12.5px; color: var(--dim); user-select: none;
+    padding: 8px 2px; list-style: none;
+  }
+  details.more summary::-webkit-details-marker { display: none; }
+  details.more summary::before { content: "▸ "; }
+  details.more[open] summary::before { content: "▾ "; }
+  details.more summary:hover { color: var(--orange-hi); }
+
+  /* ===== 概率表 ===== */
+  .ptable-wrap { max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; }
+  table.ptable { width: 100%; border-collapse: collapse; font-size: 12px; }
+  table.ptable th {
+    position: sticky; top: 0; background: var(--head); color: var(--dim);
+    font-weight: 400; text-align: left; padding: 7px 10px;
+  }
+  table.ptable td { padding: 6px 10px; border-top: 1px solid var(--border-soft); color: var(--text-2); }
+  table.ptable td:last-child, table.ptable th:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .ptable-title { font-size: 12px; color: var(--dim); margin: 10px 2px 6px; }
+
+  /* ===== 结果卡片网格 ===== */
+  .grid {
+    margin-top: 14px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px;
+  }
+  .prize {
+    border-radius: 13px; padding: 10px 6px 12px; text-align: center;
+    background: var(--card); border: 1px solid var(--border);
+    position: relative; overflow: hidden;
+    animation: pop .3s cubic-bezier(.2,.9,.3,1.4) backwards;
+  }
+  @keyframes pop { from { opacity: 0; transform: scale(.8) translateY(6px); } }
+  .prize .badge {
+    display: inline-block; font-size: 11px; font-weight: 600;
+    padding: 2px 12px; border-radius: 999px; margin-bottom: 8px; letter-spacing: 1px;
+  }
+  .prize .ic { height: 44px; display: flex; align-items: center; justify-content: center; }
+  .prize .ic .ii-img { width: 40px; height: 40px; border-radius: 10px; }
+  .prize .ic .ii-fb { font-size: 26px; line-height: 1; }
+  .prize .nm { font-size: 12.5px; margin-top: 5px; line-height: 1.35; word-break: break-all; }
+  .prize .amt { font-size: 11px; color: var(--dim); margin-top: 3px; font-variant-numeric: tabular-nums; }
+
+  .prize.普通 { background: var(--prize-common-bg); border-color: var(--prize-common-bd); }
+  .prize.普通 .badge { background: var(--prize-common-badge); color: var(--prize-common-badge-t); }
+
+  .prize.高级 { background: var(--prize-senior-bg); border-color: var(--prize-senior-bd); }
+  .prize.高级 .badge { background: #175a9e; color: #cfe7ff; box-shadow: 0 0 10px rgba(77,163,255,.35); }
+
+  .prize.唯一 { background: var(--prize-unique-bg); border-color: var(--prize-unique-bd); }
+  .prize.唯一 .badge { background: #7b3fc4; color: #f3e9ff; box-shadow: 0 0 12px rgba(150,90,255,.5); }
+
+  .prize.传说 { background: var(--prize-legend-bg); border-color: var(--prize-legend-bd); }
+  .prize.传说 .badge { background: linear-gradient(180deg, #ffca4d, #ff9a1f); color: #5a3600; font-weight: 700; box-shadow: 0 0 14px rgba(255,170,40,.55); }
+  .prize.传说::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,210,110,.14) 45%, transparent 60%);
+    animation: shine 2.6s ease-in-out infinite;
+  }
+  @keyframes shine { 0%,100% { opacity: 0; } 50% { opacity: 1; } }
+
+  /* 周宝箱品质（沿用结果卡片外观） */
+  .prize.黄金 { background: var(--prize-legend-bg); border-color: var(--prize-legend-bd); }
+  .prize.黄金 .badge { background: linear-gradient(180deg, #ffca4d, #ff9a1f); color: #5a3600; font-weight: 700; box-shadow: 0 0 14px rgba(255,170,40,.55); }
+  .prize.黄金::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(115deg, transparent 30%, rgba(255,210,110,.14) 45%, transparent 60%);
+    animation: shine 2.6s ease-in-out infinite;
+  }
+  .prize.红色 { background: var(--prize-red-bg); border-color: var(--prize-red-bd); }
+  .prize.红色 .badge { background: #c53030; color: #ffe3e3; box-shadow: 0 0 10px rgba(229,72,77,.45); }
+  .prize.紫色 { background: var(--prize-unique-bg); border-color: var(--prize-unique-bd); }
+  .prize.紫色 .badge { background: #7b3fc4; color: #f3e9ff; box-shadow: 0 0 12px rgba(150,90,255,.5); }
+  .prize.蓝色 { background: var(--prize-senior-bg); border-color: var(--prize-senior-bd); }
+  .prize.蓝色 .badge { background: #1f6fd0; color: #dcecff; box-shadow: 0 0 10px rgba(77,163,255,.35); }
+  /* 「确保」角标 */
+  .prize .sure-tag {
+    position: absolute; top: 0; right: 0; z-index: 1;
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; color: #5a3600;
+    background: linear-gradient(180deg, #ffca4d, #ff9a1f);
+    padding: 2px 8px; border-bottom-left-radius: 9px;
+    box-shadow: 0 2px 8px rgba(255,150,20,.35);
+  }
+
+  .grid-note { text-align: center; color: var(--dim); font-size: 12px; padding: 12px 0 4px; }
+
+  .empty-hint { text-align: center; color: var(--dim-2); font-size: 13px; padding: 46px 0 10px; }
+  .empty-hint .big { font-size: 34px; display: block; margin-bottom: 8px; opacity: .6; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-thumb { background: var(--scroll); border-radius: 3px; }
+
+  /* ============================================================
+     导入弹窗
+     ============================================================ */
+  .mask {
+    position: fixed; inset: 0; z-index: 50; padding: 18px;
+    background: var(--mask);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mask[hidden] { display: none; }
+  .modal {
+    width: 100%; max-width: 640px; max-height: 88vh; overflow-y: auto;
+    background: var(--modal-bg); border: 1px solid var(--input-border); border-radius: 18px;
+    padding: 0 20px 20px; box-shadow: var(--modal-shadow);
+    animation: pop .22s ease;
+  }
+  .modal.wide { max-width: 780px; }
+  .modal-head {
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 2;
+    margin: 0 -20px 14px; padding: 20px 20px 12px;
+    background: var(--modal-bg); border-bottom: 1px solid var(--border-soft);
+  }
+  .modal-head h3 { margin: 0; font-size: 16px; font-weight: 700; }
+  .modal-head .x {
+    background: none; border: none; color: var(--dim); font-size: 16px;
+    cursor: pointer; padding: 4px 8px; border-radius: 8px; font-family: inherit;
+  }
+  .modal-head .x:hover { color: var(--text); background: var(--border-soft); }
+
+  .modal-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 18px; }
+  .modal-actions .spacer { flex: 1; }
+  .modal-actions button {
+    padding: 9px 16px; font-size: 13px; border-radius: 10px; cursor: pointer;
+    font-family: inherit; border: 1px solid var(--border);
+    background: var(--panel); color: var(--text-2); transition: all .15s;
+  }
+  .modal-actions button:hover { color: var(--text); border-color: var(--hover-border); }
+  .modal-actions button.primary {
+    background: linear-gradient(180deg, #ffb02e, #ff8a00); border: none;
+    color: #3d2400; font-weight: 700;
+    box-shadow: 0 4px 14px rgba(255,138,0,.3);
+  }
+  .modal-actions button.primary:disabled {
+    background: var(--disabled-bg); color: var(--disabled-t); box-shadow: none; cursor: not-allowed;
+  }
+
+  /* ===== 充值弹窗 ===== */
+  .modal.narrow { max-width: 420px; }
+  .rc-rate { margin: 0 0 4px; font-size: 12.5px; color: var(--dim); }
+  .lbl { display: block; margin: 14px 0 6px; font-size: 12.5px; color: var(--dim); }
+  #rechargeYuan, #buyPointQty {
+    width: 100%; background: var(--input-bg); color: var(--text);
+    border: 1px solid var(--input-border); border-radius: 10px; padding: 10px 12px;
+    font-family: inherit; font-size: 15px; outline: none;
+    font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield; appearance: textfield;   /* 去掉数字框的上下箭头 */
+  }
+  #rechargeYuan::-webkit-outer-spin-button,
+  #rechargeYuan::-webkit-inner-spin-button,
+  #buyPointQty::-webkit-outer-spin-button,
+  #buyPointQty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #rechargeYuan:focus, #buyPointQty:focus { border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,154,31,.12); }
+  /* 积分购买：档位列表 */
+  .buy-packs { display: grid; gap: 8px; margin-top: 10px; }
+  .buy-packs button {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    padding: 9px 12px; font-size: 13px; cursor: pointer; font-family: inherit;
+    color: var(--text-2); background: var(--panel);
+    border: 1px solid var(--border); border-radius: 10px; transition: all .15s;
+  }
+  .buy-packs button:hover { color: var(--orange-hi); border-color: var(--orange-border); }
+  .buy-packs button.active {
+    color: var(--text); border-color: var(--orange); background: var(--soft);
+    box-shadow: inset 0 0 0 1px var(--orange);
+  }
+  .buy-packs .bp-p { color: var(--gold-text); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .buy-packs .bp-c { color: var(--dim); font-variant-numeric: tabular-nums; }
+  .buy-note { margin: 10px 0 0; font-size: 12.5px; color: var(--err); min-height: 17px; }
+  .rc-quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .rc-quick button {
+    flex: 1; min-width: 56px; padding: 7px 4px; font-size: 12.5px; cursor: pointer;
+    font-family: inherit; color: var(--text-2); background: var(--panel);
+    border: 1px solid var(--border); border-radius: 9px; transition: all .15s;
+  }
+  .rc-quick button:hover { color: var(--orange-hi); border-color: var(--orange-border); }
+  .rc-gain {
+    margin-top: 16px; padding: 12px; text-align: center; font-size: 13px; color: var(--text-2);
+    background: var(--soft); border: 1px solid var(--input-border); border-radius: 12px;
+  }
+  .rc-gain b {
+    color: var(--orange-hi); font-size: 18px; font-weight: 800;
+    font-variant-numeric: tabular-nums; margin: 0 2px;
+  }
+
+  /* ============================================================
+     徽记卡（合成系统）
+     ============================================================ */
+  .hjk { display: grid; gap: 14px; }
+  .hjk[hidden] { display: none; }
+  .panel-box {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 14px 16px 16px;
+  }
+  .panel-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+  .panel-title .panel-sub { font-size: 12px; color: var(--dim); font-weight: 400; margin-left: 6px; }
+  .panel-note { font-size: 12px; color: var(--dim); margin-bottom: 10px; line-height: 1.6; }
+
+  /* 库存表 */
+  table.hjk-inv { width: 100%; border-collapse: collapse; font-size: 12px; margin-top: 8px; }
+  table.hjk-inv th, table.hjk-inv td {
+    padding: 5px 4px; text-align: center; border-top: 1px solid var(--border-soft);
+    font-variant-numeric: tabular-nums;
+  }
+  table.hjk-inv th { color: var(--dim); font-weight: 400; border-top: none; }
+  table.hjk-inv td.zero { color: var(--dim-2); }
+  table.hjk-inv td.has { color: var(--text); font-weight: 700; }
+  table.hjk-inv .clickable { cursor: pointer; }
+  table.hjk-inv .clickable:hover { color: var(--orange-hi); background: var(--head); }
+  table.hjk-inv .cc { text-align: left; font-weight: 600; }
+  .cc.red { color: var(--err); } .cc.yellow { color: var(--gold-text); }
+  .cc.green { color: var(--ok); } .cc.blue { color: var(--blue-text); }
+
+  /* 开包 */
+  .panel-buy { display: flex; gap: 8px; align-items: stretch; }
+  #hjkQty {
+    width: 96px; background: var(--input-bg); color: var(--text); border: 1px solid var(--input-border);
+    border-radius: 10px; padding: 9px 10px; font-family: inherit; font-size: 14px;
+    outline: none; font-variant-numeric: tabular-nums;
+    -moz-appearance: textfield; appearance: textfield;
+  }
+  #hjkQty::-webkit-outer-spin-button, #hjkQty::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+  #hjkQty:focus { border-color: var(--orange); }
+  .panel-buy .buy-btn {
+    flex: 1; padding: 9px 12px; font-family: inherit; font-size: 13.5px; cursor: pointer;
+    color: #3d2400; font-weight: 700; border: none; border-radius: 10px;
+    background: linear-gradient(180deg, #ffb02e, #ff8a00);
+    box-shadow: 0 4px 14px rgba(255,138,0,.28); transition: filter .15s, transform .08s;
+  }
+  .panel-buy .buy-btn b { font-variant-numeric: tabular-nums; }
+  .panel-buy .buy-btn:hover { filter: brightness(1.06); }
+  .panel-buy .buy-btn:active { transform: scale(.97); }
+  .panel-buy .buy-btn:disabled { filter: grayscale(.5) brightness(.7); cursor: not-allowed; }
+  .panel-quick { display: flex; gap: 8px; margin-top: 8px; }
+  .panel-quick button {
+    flex: 1; padding: 6px 4px; font-size: 12px; cursor: pointer; font-family: inherit;
+    color: var(--text-2); background: var(--panel); border: 1px solid var(--border);
+    border-radius: 9px; transition: all .15s;
+  }
+  .panel-quick button:hover { color: var(--orange-hi); border-color: var(--orange-border); }
+  .panel-quick button:disabled { opacity: .45; cursor: not-allowed; }
+  .panel-quick button:disabled:hover { color: var(--muted); border-color: var(--border); }
+  .panel-quick button.active {
+    color: #3d2400; font-weight: 700; border-color: transparent;
+    background: linear-gradient(180deg, #ffb02e, #ff8a00);
+  }
+  .panel-note .hl { color: var(--text); font-variant-numeric: tabular-nums; }
+
+  /* 合成行 */
+  .hjk-srow {
+    display: grid; grid-template-columns: 52px 1fr 1fr; gap: 8px; align-items: center;
+    padding: 7px 0; border-top: 1px solid var(--border-soft);
+  }
+  .hjk-srow:first-child { border-top: none; }
+  .hjk-srow .hs-star { font-weight: 700; font-size: 13px; }
+  .hjk-srow .hs-star small { color: var(--dim); font-weight: 400; font-size: 11px; display: block; }
+  .hjk-srow .hs-btn {
+    padding: 8px 6px; font-size: 12px; font-family: inherit; cursor: pointer;
+    color: var(--text-2); background: var(--panel); border: 1px solid var(--border);
+    border-radius: 9px; transition: all .15s; line-height: 1.3;
+  }
+  .hjk-srow .hs-btn b { color: var(--gold-text); font-variant-numeric: tabular-nums; }
+  .hjk-srow .hs-btn:hover:not(:disabled) { color: var(--orange-hi); border-color: var(--orange-border); }
+  .hjk-srow .hs-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* 合成次数切换 */
+  .panel-tabs { display: flex; gap: 8px; margin: 8px 0 6px; }
+  .panel-tabs button {
+    flex: 1; padding: 7px 4px; font-size: 12.5px; cursor: pointer; font-family: inherit;
+    color: var(--text-2); background: var(--panel); border: 1px solid var(--border);
+    border-radius: 9px; transition: all .15s;
+  }
+  .panel-tabs button:hover { color: var(--orange-hi); border-color: var(--orange-border); }
+  .panel-tabs button.active {
+    color: #3d2400; font-weight: 700; border-color: transparent;
+    background: linear-gradient(180deg, #ffb02e, #ff8a00);
+  }
+
+  /* 结果卡 */
+  .panel-cards { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .panel-card {
+    width: 200px; border-radius: 12px; padding: 9px 11px 10px;
+    background: var(--cc, #333); color: var(--fg, #fff);
+    border: 1px solid rgba(0, 0, 0, .28);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22);
+  }
+  .panel-card.mini { width: auto; padding: 8px 14px; }
+  .panel-card .hc-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .panel-card .hc-star { font-size: 15px; font-weight: 800; }
+  .panel-card .hc-color { font-size: 11px; opacity: .78; }
+  .panel-card .hc-eff { margin-top: 6px; display: grid; gap: 3px; }
+  .panel-card .hc-eff .e {
+    font-size: 11.5px; line-height: 1.4; display: flex; align-items: center; gap: 5px;
+    white-space: nowrap;
+  }
+  .panel-card .g {
+    flex: none; width: 27px; text-align: center; font-size: 10px; font-weight: 700;
+    border-radius: 4px; padding: 1px 0;
+  }
+  .panel-card .g-C { background: #2b3140; color: #c3cad8; }
+  .panel-card .g-B { background: #1f4d3a; color: #8ff0c0; }
+  .panel-card .g-A { background: #175a9e; color: #dcecff; }
+  .panel-card .g-S { background: #6b3fb8; color: #f3e9ff; }
+  .panel-card .g-SS { background: #8a5400; color: #ffe6ad; }
+  .panel-card .g-SSS { background: linear-gradient(180deg, #b8791a, #7a4a00); color: #fff3d6; }
+
+  /* 详情弹窗：一行三张（窄屏降为 2 / 1 列） */
+  #hjkDetailBody { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  #hjkDetailBody .panel-card { width: auto; min-width: 0; }
+  @media (max-width: 720px) { #hjkDetailBody { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 470px) { #hjkDetailBody { grid-template-columns: 1fr; } }
+
+  /* 详情弹窗：滚动到底自动加载的提示 */
+  .panel-more { text-align: center; color: var(--dim); font-size: 12.5px; padding: 16px 0 2px; }
+  .panel-more:empty { display: none; }
+
+  /* ============================================================
+     能力随机卡
+     ============================================================ */
+  .abil { display: grid; gap: 14px; }
+  .abil[hidden] { display: none; }
+  .abil-probs { display: grid; gap: 6px; margin-top: 10px; }
+  .abil-row {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--soft); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 7px 12px; font-size: 13px;
+  }
+  .abil-row b { color: var(--text); font-variant-numeric: tabular-nums; }
+  .abil-row .l { display: flex; align-items: center; gap: 8px; }
+  .abil-bonus { font-size: 12px; color: var(--text-2); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .abil-bonus.big { font-size: 13px; }
+  .abil-targets { display: grid; gap: 6px; margin-top: 10px; }
+  .abil-target {
+    display: flex; align-items: center; gap: 9px; width: 100%; cursor: pointer;
+    font-family: inherit; font-size: 13px; text-align: left;
+    background: var(--soft); border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 9px 12px; color: var(--text-2); transition: all .15s;
+  }
+  .abil-target .box {
+    flex: none; width: 16px; height: 16px; border-radius: 4px;
+    border: 1.5px solid var(--border); color: transparent;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; line-height: 1;
+  }
+  .abil-target:hover { border-color: var(--orange-border); }
+  .abil-target.active { color: var(--text); border-color: var(--orange); background: var(--card); }
+  .abil-target.active .box { background: var(--orange); border-color: var(--orange); color: #fff; }
+
+  /* ============================================================
+     周宝箱
+     ============================================================ */
+  .wbox { display: grid; gap: 14px; }
+  .wbox[hidden] { display: none; }
+  .box-items {
+    margin-top: 14px;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px;
+  }
+  /* 道具图标：图片 + 名字 */
+  .ii-img { display: block; object-fit: contain; }
+  .ii-fb { display: inline-flex; align-items: center; justify-content: center; line-height: 1; }
+  .abil-chip {
+    display: inline-block; font-size: 12px; font-weight: 700;
+    padding: 2px 10px; border-radius: 999px; color: #fff;
+    background: #6b7488; font-variant-numeric: tabular-nums;
+  }
+  .abil-chip.ab1 { background: #6b7488; }
+  .abil-chip.ab2 { background: #1f6fd0; }
+  .abil-chip.ab3 { background: #7b3fc4; }
+  .abil-chip.ab4 { background: #a06a15; }
+  .abil-chip.ab5 { background: linear-gradient(180deg, #ffca4d, #ff9a1f); color: #5a3600; }
+  .abil-chip.big { font-size: 15px; padding: 4px 14px; }
+  .abil-diff { display: flex; flex-wrap: wrap; gap: 10px 16px; margin-top: 10px; }
+  .abil-diff .d { font-size: 12.5px; color: var(--text-2); }
+  .abil-diff .d b { color: var(--text); font-variant-numeric: tabular-nums; }
+
+  .panel-empty { color: var(--dim-2); font-size: 12.5px; padding: 8px 0; }
+  .panel-sum { font-size: 12.5px; color: var(--text-2); line-height: 1.8; }
+  .panel-sum b { color: var(--orange-hi); }
+
+  /* ===== 轻提示 ===== */
+  .toast {
+    position: fixed; left: 50%; bottom: 30px; z-index: 60;
+    transform: translateX(-50%) translateY(14px);
+    background: var(--toast-bg); border: 1px solid var(--line-strong); color: var(--toast-text);
+    padding: 10px 18px; border-radius: 999px; font-size: 13px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.5);
+    opacity: 0; pointer-events: none; transition: all .22s ease;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* ===== 主题切换按钮 ===== */
+  .theme-toggle {
+    position: fixed; top: 14px; right: 14px; z-index: 45;
+    width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; font-size: 18px;
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, .22); transition: all .15s;
+  }
+  .theme-toggle:hover { border-color: var(--orange); transform: translateY(-1px); }
+  .theme-toggle:active { transform: scale(.94); }
+
+  /* ============================================================
+     顶部：活动栏
+     ============================================================ */
+  /* 活动栏：整条背景，胶囊居中 */
+  .acts {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+    width: fit-content; max-width: 100%;
+    margin: 0 auto 20px; padding: 10px 12px;
+    background: var(--head); border: 1px solid var(--border); border-radius: 16px;
+  }
+  .acts .act {
+    font-family: inherit; font-size: 12.5px; cursor: pointer; white-space: nowrap;
+    color: var(--muted); background: var(--panel);
+    border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 15px; transition: all .15s;
+  }
+  .acts .act:hover { color: var(--text); border-color: var(--hover-border); }
+  .acts .act.active {
+    color: #3d2400; font-weight: 700; border-color: transparent;
+    background: linear-gradient(180deg, #ffb02e, #ff8a00);
+    box-shadow: 0 4px 14px rgba(255,138,0,.3);
+  }
+
+  /* ============================================================
+     桌面端适配（≥1024px）：双列布局
+     ============================================================ */
+  @media (min-width: 1024px) {
+    .wrap { max-width: 1280px; padding: 34px 32px 90px; }
+    header { margin-bottom: 24px; }
+    .layout {
+      display: grid; grid-template-columns: 400px minmax(0, 1fr);
+      gap: 28px; align-items: start;
+    }
+    .side {
+      position: sticky; top: 24px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+    .side > * { margin-top: 0; }
+    .main { min-width: 0; }
+    .main .grid { margin-top: 0; }
+    .draw-btns { gap: 12px; }
+    .draw-btn { padding: 15px 4px 13px; border-radius: 16px; }
+    .draw-btn .t { font-size: 20px; }
+    .draw-btn .s { font-size: 12px; }
+    .stat { padding: 16px 12px 14px; }
+    .stat .v { font-size: 30px; }
+    .grid { grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 12px; }
+    .prize { padding: 12px 8px 14px; }
+    .prize .ic { height: 50px; }
+    .prize .ic .ii-img { width: 46px; height: 46px; }
+    .prize .ic .ii-fb { font-size: 30px; }
+    .prize .nm { font-size: 13px; }
+    .empty-hint { padding: 100px 0; font-size: 14px; }
+    .empty-hint .big { font-size: 42px; }
+    .toolbar button { padding: 9px 8px; }
+    details.more { margin-top: 20px; }
+    .ptable-wrap { max-height: 380px; }
+  }
+  @media (min-width: 1500px) {
+    .wrap { max-width: 1440px; }
+    .layout { grid-template-columns: 440px minmax(0, 1fr); }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" title="切换主题" aria-label="切换主题">🌙</button>
+<div class="wrap">
+  <header>
+    <div class="logo">🎰</div>
+    <h1>街头篮球抽奖模拟器</h1>
+    <p class="sub">概 率 实 测 小 工 具 · 结 果 仅 供 娱 乐</p>
+  </header>
+
+  <div class="wallet">
+    <div class="cur">
+      <span class="cur-ic">🎟️</span><span class="cur-name">点券</span>
+      <b class="cur-val" id="couponVal">0</b>
+      <button class="cur-buy" data-cur="coupon">充值</button>
+    </div>
+    <div class="cur">
+      <span class="cur-ic">💰</span><span class="cur-name">积分</span>
+      <b class="cur-val" id="pointVal">0</b>
+      <button class="cur-buy" data-cur="point">购买</button>
+    </div>
+  </div>
+
+  <section class="acts" id="acts"></section>
+
+  <div class="layout">
+    <!-- 左列：控制面板 -->
+    <div class="side">
+      <section class="stats-grid" id="statCards"></section>
+
+      <div class="draw-btns">
+        <button class="draw-btn alt" data-n="1"><span class="t">抽 1 次</span><span class="s">单抽概率池</span></button>
+        <button class="draw-btn" data-n="10"><span class="t">抽 10 次</span><span class="s">10抽概率池</span></button>
+        <button class="draw-btn" data-n="50"><span class="t">抽 50 次</span><span class="s">50抽概率池</span></button>
+      </div>
+
+      <div class="summary" id="summary"></div>
+
+      <div class="toolbar">
+        <button id="btnReset">清空记录 / 重置统计</button>
+        <button id="btnMore" data-n="1000">抽 1000 次</button>
+      </div>
+    </div>
+
+    <!-- 右列：结果区 -->
+    <div class="main">
+      <div class="empty-hint" id="emptyHint">
+        <span class="big">🎁</span>
+        点击抽奖按钮开始模拟
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <div class="grid-note" id="gridNote"></div>
+
+      <details class="more" id="moreBox">
+        <summary>概率表详情 / 传说率</summary>
+        <div class="ptable-title">单抽概率池 <span id="observed1"></span></div>
+        <div class="ptable-wrap" id="table1"></div>
+        <div class="ptable-title">10抽/50次概率池 <span id="observed10"></span></div>
+        <div class="ptable-wrap" id="table10"></div>
+      </details>
+    </div>
+  </div>
+
+  <section class="hjk" id="hjkPanel" hidden></section>
+
+  <section class="abil" id="abilPanel" hidden></section>
+
+  <section class="wbox" id="wboxPanel" hidden></section>
+</div>
+
+<!-- ===== 充值弹窗 ===== -->
+<div class="mask" id="rechargeMask" hidden>
+  <div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="rechargeTitle">
+    <div class="modal-head">
+      <h3 id="rechargeTitle">充值点券</h3>
+      <button class="x" id="btnCloseRecharge" aria-label="关闭">✕</button>
+    </div>
+
+    <p class="rc-rate" id="rechargeRate">充值比例 1 元 = 100 点券</p>
+
+    <label class="lbl" for="rechargeYuan">充值金额（元）</label>
+    <input id="rechargeYuan" type="number" min="0" step="1" value="100" inputmode="decimal" spellcheck="false">
+
+    <div class="rc-quick" id="rechargeQuick">
+      <button data-yuan="100">100 元</button>
+      <button data-yuan="200">200 元</button>
+      <button data-yuan="300">300 元</button>
+      <button data-yuan="500">500 元</button>
+      <button data-yuan="1000">1000 元</button>
+    </div>
+
+    <div class="rc-gain">到账 <b id="rechargeGain">100</b> <span id="rechargeUnit">点券</span></div>
+
+    <div class="modal-actions">
+      <span class="spacer"></span>
+      <button id="btnCancelRecharge">取消</button>
+      <button class="primary" id="btnDoRecharge">确认充值</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 购买积分弹窗（用点券兑换） ===== -->
+<div class="mask" id="buyPointMask" hidden>
+  <div class="modal narrow" role="dialog" aria-modal="true" aria-labelledby="buyPointTitle">
+    <div class="modal-head">
+      <h3 id="buyPointTitle">购买积分</h3>
+      <button class="x" id="btnCloseBuyPoint" aria-label="关闭">✕</button>
+    </div>
+
+    <p class="rc-rate">用点券兑换积分 · 当前点券 <b id="buyPointCoupon">0</b></p>
+
+    <label class="lbl">选择档位</label>
+    <div class="buy-packs" id="buyPointPacks"></div>
+
+    <label class="lbl" for="buyPointQty">购买数量（份）</label>
+    <input id="buyPointQty" type="number" min="1" step="1" value="1" inputmode="numeric" spellcheck="false">
+    <div class="rc-quick" id="buyPointQuick">
+      <button data-qty="1">×1</button>
+      <button data-qty="5">×5</button>
+      <button data-qty="10">×10</button>
+    </div>
+
+    <div class="rc-gain">到账 <b id="buyPointGain">10,000</b> 积分 · 花费 <b id="buyPointCost">350</b> 点券</div>
+    <p class="buy-note" id="buyPointNote"></p>
+
+    <div class="modal-actions">
+      <span class="spacer"></span>
+      <button id="btnCancelBuyPoint">取消</button>
+      <button class="primary" id="btnDoBuyPoint">确认购买</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 徽记卡详情弹窗 ===== -->
+<div class="mask" id="hjkDetailMask" hidden>
+  <div class="modal wide" role="dialog" aria-modal="true" aria-labelledby="hjkDetailTitle">
+    <div class="modal-head">
+      <h3 id="hjkDetailTitle">徽记卡详情</h3>
+      <button class="x" id="hjkDetailClose" aria-label="关闭">✕</button>
+    </div>
+    <div class="panel-cards" id="hjkDetailBody"></div>
+    <div class="panel-more" id="hjkDetailMore"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>/* 主题尽早应用，避免刷新时闪烁（auto 跟随系统） */try{var m=localStorage.getItem('lucky-sim-theme-v1');var l=(m==='light')||(m!=='dark'&&window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches);if(l)document.documentElement.dataset.theme='light';}catch(e){}</script>
+<script>
+/* ============================================================
+ * 概率表（与 prizes.js 保持一致；改数据时两处需同步）
+ * ============================================================ */
+const POOL_SINGLE = [
+  { quality:'传说', name:'莱克丝角色包',         amount:'1个',    weight:0.10 },
+  { quality:'传说', name:'莱克丝变更卡',         amount:'1个',    weight:0.05 },
+  { quality:'传说', name:'徽记卡转移券',         amount:'1个',    weight:0.05 },
+  { quality:'传说', name:'超特强化碎片兑换券',   amount:'1个',    weight:0.05 },
+  { quality:'唯一', name:'虚拟浪潮队伍徽记卡',   amount:'5个',    weight:0.70 },
+  { quality:'唯一', name:'VVIP',                 amount:'30天',   weight:0.60 },
+  { quality:'唯一', name:'超级能力加强包',       amount:'30天',   weight:0.70 },
+  { quality:'唯一', name:'新更改组合装外形',     amount:'14天',   weight:0.70 },
+  { quality:'高级', name:'虚拟浪潮队伍徽记卡',   amount:'1个',    weight:1.50 },
+  { quality:'高级', name:'高级徽记卡',           amount:'1个',    weight:2.00 },
+  { quality:'高级', name:'完整的强化碎片箱钥匙', amount:'10个',   weight:2.50 },
+  { quality:'高级', name:'完整的创建碎片箱钥匙', amount:'10个',   weight:2.50 },
+  { quality:'高级', name:'完整的道具碎片箱钥匙', amount:'10个',   weight:1.50 },
+  { quality:'高级', name:'笑脸',                 amount:'50个',   weight:3.50 },
+  { quality:'普通', name:'黄金徽记卡',           amount:'2个',    weight:11.00 },
+  { quality:'普通', name:'完整的普通碎片箱钥匙', amount:'10个',   weight:12.00 },
+  { quality:'普通', name:'红色龙珠',             amount:'4个',    weight:13.00 },
+  { quality:'普通', name:'笑脸',                 amount:'25个',   weight:14.00 },
+  { quality:'普通', name:'蓝色龙珠',             amount:'4个',    weight:16.00 },
+  { quality:'普通', name:'积分',                 amount:'10000',  weight:17.55 },
+];
+const POOL_MULTI = [
+  { quality:'传说', name:'莱克丝角色包',         amount:'1个',    weight:0.20 },
+  { quality:'传说', name:'莱克丝变更卡',         amount:'1个',    weight:0.10 },
+  { quality:'传说', name:'徽记卡转移券',         amount:'1个',    weight:0.10 },
+  { quality:'传说', name:'超特强化碎片兑换券',   amount:'1个',    weight:0.10 },
+  { quality:'唯一', name:'虚拟浪潮队伍徽记卡',   amount:'5个',    weight:0.60 },
+  { quality:'唯一', name:'VVIP',                 amount:'30天',   weight:0.60 },
+  { quality:'唯一', name:'超级能力加强包',       amount:'30天',   weight:0.60 },
+  { quality:'唯一', name:'新更改组合装外形',     amount:'14天',   weight:0.80 },
+  { quality:'高级', name:'虚拟浪潮队伍徽记卡',   amount:'1个',    weight:1.50 },
+  { quality:'高级', name:'高级徽记卡',           amount:'1个',    weight:2.00 },
+  { quality:'高级', name:'完整的强化碎片箱钥匙', amount:'10个',   weight:2.50 },
+  { quality:'高级', name:'完整的创建碎片箱钥匙', amount:'10个',   weight:2.50 },
+  { quality:'高级', name:'完整的道具碎片箱钥匙', amount:'10个',   weight:1.50 },
+  { quality:'高级', name:'笑脸',                 amount:'50个',   weight:3.50 },
+  { quality:'普通', name:'黄金徽记卡',           amount:'2个',    weight:11.00 },
+  { quality:'普通', name:'完整的普通碎片箱钥匙', amount:'10个',   weight:12.00 },
+  { quality:'普通', name:'红色龙珠',             amount:'4个',    weight:13.00 },
+  { quality:'普通', name:'笑脸',                 amount:'25个',   weight:14.00 },
+  { quality:'普通', name:'蓝色龙珠',             amount:'4个',    weight:16.00 },
+  { quality:'普通', name:'积分',                 amount:'10000',  weight:17.40 },
+];
+const QUALITY_ORDER = ['传说', '唯一', '高级', '普通'];
+
+/* 华丽DJ杰德：与闪耀DJ莱克丝同一套池子，仅传说档两件物品不同 */
+const JED_RENAME = { '莱克丝角色包': '杰德角色包', '莱克丝变更卡': '杰德变更卡' };
+const jedPool = pool => pool.map(it => JED_RENAME[it.name] ? { ...it, name: JED_RENAME[it.name] } : { ...it });
+const POOL_SINGLE_JED = jedPool(POOL_SINGLE);
+const POOL_MULTI_JED = jedPool(POOL_MULTI);
+
+/* 概率池类活动：各自独立的池子 / 自定义表 / 累计统计 */
+const POOL_ACTS = ['闪耀DJ莱克丝', '华丽DJ杰德'];
+const POOL_BASES = {
+  '闪耀DJ莱克丝': { single: POOL_SINGLE, multi: POOL_MULTI },
+  '华丽DJ杰德':   { single: POOL_SINGLE_JED, multi: POOL_MULTI_JED },
+};
+let currentPoolAct = POOL_ACTS[0];
+
+const pools = {
+  single: POOL_BASES[currentPoolAct].single.slice(),
+  multi: POOL_BASES[currentPoolAct].multi.slice(),
+};
+
+/* ============================================================
+ * 随机内核（xorshift32 + 前缀和二分）
+ * ============================================================ */
+let seed = (Date.now() ^ 0x9e3779b9) >>> 0 || 1;
+function rand() {
+  seed ^= seed << 13; seed >>>= 0;
+  seed ^= seed >>> 17;
+  seed ^= seed << 5;  seed >>>= 0;
+  return seed / 4294967296;
+}
+function drawFrom(pool, n) {
+  const cumArr = []; let acc = 0;
+  for (const it of pool) { acc += it.weight; cumArr.push(acc); }
+  const out = [];
+  for (let i = 0; i < n; i++) {
+    const r = rand() * acc;
+    let lo = 0, hi = cumArr.length - 1;
+    while (lo < hi) { const m = (lo + hi) >> 1; cumArr[m] > r ? hi = m : lo = m + 1; }
+    out.push(pool[lo]);
+  }
+  return out;
+}
+
+/** 闪耀DJ莱克丝：每次抽取花费（点券） */
+const DRAW_COST = 880;
+
+/* ============================================================
+ * 累计统计（localStorage 持久化）
+ * ============================================================ */
+const LS_KEY = 'lucky-sim-cum-v1';
+
+function blankCum() {
+  return { total: 0, legend: {}, legendCount: 0, uniqueCount: 0, couponSpent: 0 };
+}
+
+// 累计统计：按活动分开存 { 活动名: cum }
+let cumAll = {};
+try { cumAll = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch (_) { cumAll = {}; }
+if (cumAll && typeof cumAll.total === 'number') cumAll = { [POOL_ACTS[0]]: cumAll };  // 兼容旧版扁平结构
+
+let cum = null;   // 指向当前活动的统计对象
+
+function saveCum() { try { localStorage.setItem(LS_KEY, JSON.stringify(cumAll)); } catch (_) {} }
+
+/** 切到某活动：取出（或新建）它的统计对象，赋给 cum */
+function useCum(act) {
+  const c = cumAll[act];
+  cum = (c && typeof c.total === 'number' && c.legend) ? c : (cumAll[act] = blankCum());
+}
+
+/** 当前两个池子里的传说物品名 + 已记录过的名字（顺序稳定，卡片不跳动） */
+function legendNames() {
+  const set = new Set();
+  for (const p of [pools.single, pools.multi]) {
+    for (const it of p) if (it.quality === '传说') set.add(it.name);
+  }
+  for (const k of Object.keys(cum.legend || {})) set.add(k);
+  return [...set];
+}
+
+/** 补齐缺失键、合并改名前的旧键，并校准总数 */
+function ensureLegendKeys() {
+  const LEGACY_ALIASES = { '杰德角色包': '莱克丝角色包', '杰德变更卡': '莱克丝变更卡' };
+  for (const [oldName, newName] of Object.entries(LEGACY_ALIASES)) {
+    if (typeof cum.legend[oldName] === 'number' && cum.legend[oldName] > 0) {
+      cum.legend[newName] = (cum.legend[newName] || 0) + cum.legend[oldName];
+    }
+    delete cum.legend[oldName];
+  }
+  for (const nm of legendNames()) {
+    if (typeof cum.legend[nm] !== 'number') cum.legend[nm] = 0;
+  }
+  if (typeof cum.legendCount !== 'number') cum.legendCount = 0;
+  if (typeof cum.uniqueCount !== 'number') cum.uniqueCount = 0;
+  if (typeof cum.couponSpent !== 'number') cum.couponSpent = 0;
+  const legendSum = legendNames().reduce((s, nm) => s + (cum.legend[nm] || 0), 0);
+  if (legendSum !== cum.legendCount) cum.legendCount = legendSum;
+  saveCum();
+}
+
+function resetCum() {
+  cum = cumAll[currentPoolAct] = blankCum();
+  ensureLegendKeys();
+}
+
+/* ---- 概率池：切到某活动就套用它的基础池 ---- */
+function usePools(act) {
+  const base = POOL_BASES[act];
+  pools.single = base.single.slice();
+  pools.multi = base.multi.slice();
+}
+
+/* ============================================================
+ * 渲染
+ * ============================================================ */
+const $ = id => document.getElementById(id);
+const fmtPct = (x, d = 2) => (x * 100).toFixed(d) + '%';
+const isMobile = () => window.matchMedia && window.matchMedia('(max-width: 1023px)').matches;
+
+function legendRate(pool) {
+  const t = pool.reduce((s, x) => s + x.weight, 0);
+  if (!t) return 0;
+  return pool.filter(x => x.quality === '传说').reduce((s, x) => s + x.weight, 0) / t;
+}
+
+function iconFor(name) {
+  if (name.includes('角色包'))     return '🎒';
+  if (name.includes('变更卡'))     return '🔄';
+  if (name.includes('转移券'))     return '🎟️';
+  if (name.includes('兑换券'))     return '🎫';
+  if (name === 'VVIP')             return '👑';
+  if (name.includes('加强包'))     return '⚡';
+  if (name.includes('外形'))       return '🎭';
+  if (name.includes('龙珠'))       return name.includes('红') ? '🔴' : '🔵';
+  if (name.includes('钥匙'))       return '🗝️';
+  if (name.includes('徽记卡'))     return '💳';
+  if (name === '积分')             return '💰';
+  if (name.includes('笑脸'))       return '😄';
+  return '💎';
+}
+
+/* ---- 道具图标（统一 SVG，放 img/；缺图时回退 emoji） ---- */
+const ITEM_ICONS = {
+  '莱克丝角色包': 'role.svg',
+  '杰德角色包': 'role.svg',      // 与莱克丝角色包共用（主体为角色）
+  '莱克丝变更卡': 'change.svg',
+  '杰德变更卡': 'change.svg',
+  '洛克斯变更卡': 'change.svg',
+  '杰罗变更卡': 'change.svg',
+  '艾达变更卡': 'change.svg',
+  '徽记卡转移券': 'card-transfer.svg',
+  '徽记卡转送券': 'card-transfer.svg',
+  '超特强化碎片兑换券': 'ticket.svg',
+  'VVIP': 'vvip.svg',
+  '超级能力加强包': 'ability.svg',
+  '新更改组合装外形': 'outfit.svg',
+  '新更改服装&装饰外形礼包': 'gift.svg',
+  // 徽记卡（按种类区分）
+  '高级徽记卡': 'card-senior.svg',
+  '黄金徽记卡': 'card-gold.svg',
+  '虚拟浪潮队伍徽记卡': 'card-wave.svg',
+  '精锐队伍徽记卡': 'card-elite.svg',
+  '4星特殊精锐队伍徽记卡': 'card-elite4.svg',
+  '5星特殊精锐队伍徽记卡': 'card-elite5.svg',
+  '4星三国徽记卡': 'card-sanguo4.svg',
+  '5星三国徽记卡': 'card-sanguo5.svg',
+  // 碎片箱钥匙（按种类区分）
+  '完整的普通碎片箱钥匙': 'key-common.svg',
+  '完整的强化碎片箱钥匙': 'key-strength.svg',
+  '完整的创建碎片箱钥匙': 'key-create.svg',
+  '完整的道具碎片箱钥匙': 'key-item.svg',
+  '最高碎片箱钥匙': 'key-max.svg',
+  '笑脸': 'smile.svg',
+  '笑脸篮子': 'smile-basket.svg',
+  '红色龙珠': 'dragon-red.svg',
+  '蓝色龙珠': 'dragon-blue.svg',
+  '积分': 'point.svg',
+  '技能包5格': 'skill-slot.svg',
+};
+
+/** 图片加载失败时回退成 emoji 占位，避免出现碎图 */
+function itemIconError(img, fallback) {
+  const s = document.createElement('span');
+  s.className = img.className.replace(/\bii-img\b/, 'ii-fb');
+  s.textContent = fallback;
+  img.replaceWith(s);
+}
+
+/** 道具图标 HTML：有映射则出图片，否则退回 emoji */
+function itemIconHtml(name, cls) {
+  const file = ITEM_ICONS[name];
+  const fb = iconFor(name);
+  const c = cls ? ' ' + cls : '';
+  if (!file) return `<span class="ii-fb${c}">${fb}</span>`;
+  return `<img class="ii-img${c}" src="img/${file}" alt="" loading="lazy"`
+    + ` onerror="itemIconError(this,'${fb}')">`;
+}
+
+/* ---- 累计统计卡 ---- */
+const MAX_LEGEND_CARDS = 6;
+function renderStats() {
+  const rare = cum.legendCount + cum.uniqueCount;
+  const rareRate = cum.total ? rare / cum.total : 0;
+  const legendRateAll = cum.total ? cum.legendCount / cum.total : 0;
+
+  const names = legendNames();
+  const shown = names.slice(0, MAX_LEGEND_CARDS);
+  const restNames = names.slice(MAX_LEGEND_CARDS);
+  const restCount = restNames.reduce((s, nm) => s + (cum.legend[nm] || 0), 0);
+
+  $('statCards').innerHTML = `
+    <div class="stat">
+      <div class="v">${cum.total.toLocaleString()}</div>
+      <div class="k">累计抽取次数</div>
+    </div>
+    <div class="stat">
+      <div class="v">${fmtNum(cum.couponSpent || 0)}</div>
+      <div class="k">累计消耗点券</div>
+      <div class="extra">每次 <b>${fmtNum(DRAW_COST)}</b> 点券</div>
+    </div>
+    <div class="stat hit">
+      <div class="v">${rare}</div>
+      <div class="k">稀有命中 · 稀有率 ${fmtPct(rareRate)}</div>
+      <div class="extra">传说 <b>${cum.legendCount}</b> · 唯一 <b>${cum.uniqueCount}</b></div>
+    </div>
+    ${shown.map(nm => `
+      <div class="stat ${cum.legend[nm] ? 'hit' : ''}">
+        <div class="v">${cum.legend[nm] || 0}</div>
+        <div class="k"><span class="dot">●</span>${nm}</div>
+        <div class="extra">传说率 ${fmtPct(legendRateAll)}</div>
+      </div>`).join('')}
+    ${restNames.length ? `
+      <div class="stat ${restCount ? 'hit' : ''}">
+        <div class="v">${restCount}</div>
+        <div class="k">其他传说（${restNames.length} 项）</div>
+        <div class="extra">传说率 ${fmtPct(legendRateAll)}</div>
+      </div>` : ''}
+  `;
+}
+
+/* ---- 本次摘要 ---- */
+function renderSummary(n, results) {
+  const q = { 传说: 0, 唯一: 0, 高级: 0, 普通: 0 };
+  const rareMap = new Map();
+  for (const r of results) {
+    q[r.quality] = (q[r.quality] || 0) + 1;
+    if (r.quality === '传说' || r.quality === '唯一') {
+      const k = r.quality + '|' + r.name;
+      rareMap.set(k, (rareMap.get(k) || 0) + 1);
+    }
+  }
+  const parts = QUALITY_ORDER.filter(quality => q[quality]).map(quality =>
+    `<span class="q-${quality}">${quality} ${q[quality]}</span>`).join(' · ');
+  let hits;
+  if (rareMap.size) {
+    hits = '　' + [...rareMap.entries()].slice(0, 4).map(([k, c]) => {
+      const [quality, name] = k.split('|');
+      return `<span class="hit-tag${quality === '唯一' ? ' u' : ''}">● ${name} ×${c}</span>`;
+    }).join(' ') + (rareMap.size > 4 ? ' 等' : '');
+  } else {
+    hits = '　<span class="none-rare">未出稀有，再接再厉</span>';
+  }
+  $('summary').innerHTML = `本次 ${n} 抽：${parts}${hits}`;
+}
+
+/* ---- 结果卡片 ---- */
+const MAX_CARDS = 300;
+function renderGrid(results, fresh) {
+  $('emptyHint').style.display = 'none';
+  const shown = results.slice(0, MAX_CARDS);
+  $('grid').innerHTML = shown.map((r, i) => `
+    <div class="prize ${r.quality}" style="animation-delay:${fresh ? Math.min(i * 22, 900) : 0}ms">
+      <div class="badge">${r.quality}</div>
+      <div class="ic">${itemIconHtml(r.name, 'ic-img')}</div>
+      <div class="nm">${r.name}</div>
+      <div class="amt">${r.amount}</div>
+    </div>`).join('');
+  $('gridNote').textContent = results.length > MAX_CARDS
+    ? `仅展示前 ${MAX_CARDS} 张卡片，共 ${results.length.toLocaleString()} 张`
+    : '';
+  if (isMobile()) {
+    requestAnimationFrame(() =>
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }));
+  }
+}
+
+/* ---- 概率表 ---- */
+function renderTable(poolId, mountId, obsId) {
+  const pool = pools[poolId];
+  const total = pool.reduce((s, x) => s + x.weight, 0);
+  $(mountId).innerHTML = `<table class="ptable"><tbody>
+    ${pool.map(it => `<tr>
+      <td class="q-${it.quality}">${it.quality}</td>
+      <td>${it.name}</td>
+      <td style="color:var(--dim)">${it.amount}</td>
+      <td>${fmtPct(it.weight / total)}</td>
+    </tr>`).join('')}
+  </tbody></table>`;
+  $(obsId).textContent = `· 传说率 ${fmtPct(legendRate(pool))}`;
+}
+
+/** 概率表变化后统一刷新界面 */
+function refreshPoolUI() {
+  renderTable('single', 'table1', 'observed1');
+  renderTable('multi', 'table10', 'observed10');
+  renderStats();
+}
+
+/* ============================================================
+ * 轻提示
+ * ============================================================ */
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/* ============================================================
+ * 抽奖交互
+ * ============================================================ */
+/** 清空结果区（切换概率池活动 / 重置统计时用） */
+function clearDrawResults() {
+  $('grid').innerHTML = '';
+  $('gridNote').textContent = '';
+  $('summary').innerHTML = '';
+  $('emptyHint').style.display = '';
+}
+
+let busy = false;
+
+async function draw(n) {
+  if (busy) return;
+  const cost = n * DRAW_COST;
+  if (wallet.coupon < cost) { toast(`点券不足：本次需 ${fmtNum(cost)} 点券`); return; }
+
+  busy = true;
+  document.querySelectorAll('.draw-btn,[data-n]').forEach(b => b.disabled = true);
+
+  if (n <= 50) await new Promise(r => setTimeout(r, 240));  // 抽奖节奏
+
+  wallet.coupon -= cost;
+  saveWallet();
+  renderWallet();
+
+  const pool = n === 1 ? pools.single : pools.multi;
+  const results = drawFrom(pool, n);
+
+  cum.total += n;
+  cum.couponSpent = (cum.couponSpent || 0) + cost;
+  for (const r of results) {
+    if (r.quality === '传说') { cum.legendCount++; cum.legend[r.name] = (cum.legend[r.name] || 0) + 1; }
+    else if (r.quality === '唯一') cum.uniqueCount++;
+  }
+  saveCum();
+
+  renderStats();
+  renderSummary(n, results);
+  renderGrid(results, true);
+
+  busy = false;
+  updateDrawButtons();
+}
+
+/** 按余额 / 忙碌状态刷新抽奖按钮可用性 */
+function updateDrawButtons() {
+  document.querySelectorAll('[data-n]').forEach(b => {
+    b.disabled = busy || wallet.coupon < Number(b.dataset.n) * DRAW_COST;
+  });
+}
+
+/** 抽奖按钮上标注花费（以 DRAW_COST 为准，避免写死） */
+function updateDrawCostLabels() {
+  document.querySelectorAll('.draw-btn[data-n]').forEach(b => {
+    const s = b.querySelector('.s');
+    if (s) s.textContent = `${fmtNum(Number(b.dataset.n) * DRAW_COST)} 点券`;
+  });
+  const more = $('btnMore');
+  if (more) {
+    const n = Number(more.dataset.n), c = n * DRAW_COST;
+    more.textContent = `抽 ${n} 次 · ${c >= 10000 ? (c / 10000) + '万' : fmtNum(c)}点券`;
+    more.title = `每次 ${fmtNum(DRAW_COST)} 点券，共 ${fmtNum(c)} 点券`;
+  }
+}
+
+document.querySelectorAll('[data-n]').forEach(b =>
+  b.addEventListener('click', () => draw(Number(b.dataset.n))));
+
+$('btnReset').addEventListener('click', () => {
+  if (!confirm('确定清空当前活动的累计记录并重置统计？')) return;
+  resetCum();
+  clearDrawResults();
+  renderStats();
+  toast('已清空累计记录');
+});
+
+/* ============================================================
+ * 游戏货币：点券 / 积分（localStorage 持久化）
+ * ============================================================ */
+const WALLET_KEY = 'lucky-sim-wallet-v1';
+const CURRENCIES = {
+  coupon: { name: '点券', rate: 100 },   // 1 元 = 100 点券（可充值）
+  point:  { name: '积分' },              // 积分不能用钱充值，只能用点券购买（见 POINT_PACKS）
+};
+
+let wallet;
+try { wallet = JSON.parse(localStorage.getItem(WALLET_KEY)) || null; } catch (_) { wallet = null; }
+if (!wallet || typeof wallet !== 'object') wallet = {};
+for (const k of Object.keys(CURRENCIES)) {
+  if (typeof wallet[k] !== 'number' || !isFinite(wallet[k]) || wallet[k] < 0) wallet[k] = 0;
+}
+function saveWallet() { try { localStorage.setItem(WALLET_KEY, JSON.stringify(wallet)); } catch (_) {} }
+
+const fmtNum = n => Math.floor(n).toLocaleString('zh-CN');
+
+function renderWallet() {
+  $('couponVal').textContent = fmtNum(wallet.coupon);
+  $('pointVal').textContent = fmtNum(wallet.point);
+  updateDrawButtons();
+}
+
+/* ---- 充值弹窗（仅点券；积分不能充值） ---- */
+const rechargeMask = $('rechargeMask');
+const rechargeYuan = $('rechargeYuan');
+
+function updateRechargePreview() {
+  const cur = CURRENCIES.coupon;
+  const yuan = Math.max(0, Number(rechargeYuan.value) || 0);
+  $('rechargeGain').textContent = fmtNum(yuan * cur.rate);
+  $('rechargeUnit').textContent = cur.name;
+  $('btnDoRecharge').disabled = yuan <= 0;
+}
+
+function openRecharge() {
+  const c = CURRENCIES.coupon;
+  $('rechargeTitle').textContent = `充值${c.name}`;
+  $('rechargeRate').textContent = `充值比例 1 元 = ${fmtNum(c.rate)} ${c.name} · 模拟充值，不产生真实费用`;
+  rechargeYuan.value = '100';
+  updateRechargePreview();
+  rechargeMask.hidden = false;
+  setTimeout(() => rechargeYuan.select(), 30);
+}
+function closeRecharge() { rechargeMask.hidden = true; }
+
+$('btnCloseRecharge').addEventListener('click', closeRecharge);
+$('btnCancelRecharge').addEventListener('click', closeRecharge);
+rechargeMask.addEventListener('click', e => { if (e.target === rechargeMask) closeRecharge(); });
+rechargeYuan.addEventListener('input', updateRechargePreview);
+$('rechargeQuick').addEventListener('click', e => {
+  const b = e.target.closest('button[data-yuan]');
+  if (!b) return;
+  rechargeYuan.value = b.dataset.yuan;
+  updateRechargePreview();
+});
+$('btnDoRecharge').addEventListener('click', () => {
+  const yuan = Math.max(0, Number(rechargeYuan.value) || 0);
+  if (yuan <= 0) return;
+  const gain = Math.floor(yuan * CURRENCIES.coupon.rate);
+  wallet.coupon += gain;
+  saveWallet();
+  renderWallet();
+  closeRecharge();
+  toast(`充值成功：+${fmtNum(gain)} 点券`);
+});
+
+/* ---- 购买积分（用点券兑换，可一次买多份） ---- */
+const POINT_PACKS = [
+  { point: 10000,  coupon: 350 },
+  { point: 50000,  coupon: 1680 },
+  { point: 100000, coupon: 3360 },
+];
+const buyPointMask = $('buyPointMask');
+const buyPointQty = $('buyPointQty');
+let pointPackIdx = 0;
+
+/** 当前选中档位 × 数量 → 到账积分 / 花费点券 */
+function pointBuyAmount() {
+  const p = POINT_PACKS[pointPackIdx];
+  const qty = Math.max(1, Math.floor(Number(buyPointQty.value) || 1));
+  return { qty, gain: p.point * qty, cost: p.coupon * qty };
+}
+
+function renderBuyPoint() {
+  $('buyPointPacks').innerHTML = POINT_PACKS.map((p, i) =>
+    `<button data-pack="${i}"${i === pointPackIdx ? ' class="active"' : ''}>`
+    + `<span class="bp-p">${fmtNum(p.point)} 积分</span>`
+    + `<span class="bp-c">${fmtNum(p.coupon)} 点券</span>`
+    + '</button>').join('');
+
+  $('buyPointCoupon').textContent = fmtNum(wallet.coupon);
+  const { gain, cost } = pointBuyAmount();
+  $('buyPointGain').textContent = fmtNum(gain);
+  $('buyPointCost').textContent = fmtNum(cost);
+  const lack = wallet.coupon < cost;
+  $('btnDoBuyPoint').disabled = lack;
+  $('buyPointNote').textContent = lack ? `点券不足，还差 ${fmtNum(cost - wallet.coupon)} 点券` : '';
+}
+
+function openBuyPoint() {
+  buyPointQty.value = '1';
+  renderBuyPoint();
+  buyPointMask.hidden = false;
+  setTimeout(() => buyPointQty.select(), 30);
+}
+function closeBuyPoint() { buyPointMask.hidden = true; }
+
+function doBuyPoint() {
+  const { gain, cost } = pointBuyAmount();
+  if (wallet.coupon < cost) { toast(`点券不足：本次需 ${fmtNum(cost)} 点券`); return; }
+  wallet.coupon -= cost;
+  wallet.point += gain;
+  saveWallet();
+  renderWallet();
+  closeBuyPoint();
+  toast(`购买成功：+${fmtNum(gain)} 积分（-${fmtNum(cost)} 点券）`);
+}
+
+$('btnCloseBuyPoint').addEventListener('click', closeBuyPoint);
+$('btnCancelBuyPoint').addEventListener('click', closeBuyPoint);
+$('btnDoBuyPoint').addEventListener('click', doBuyPoint);
+buyPointMask.addEventListener('click', e => { if (e.target === buyPointMask) closeBuyPoint(); });
+buyPointQty.addEventListener('input', renderBuyPoint);
+$('buyPointPacks').addEventListener('click', e => {
+  const b = e.target.closest('button[data-pack]');
+  if (!b) return;
+  pointPackIdx = Number(b.dataset.pack);
+  renderBuyPoint();
+});
+$('buyPointQuick').addEventListener('click', e => {
+  const b = e.target.closest('button[data-qty]');
+  if (!b) return;
+  buyPointQty.value = b.dataset.qty;
+  renderBuyPoint();
+});
+
+/* 钱包栏按钮：点券 → 充值，积分 → 购买 */
+document.querySelectorAll('.cur-buy').forEach(b =>
+  b.addEventListener('click', () => (b.dataset.cur === 'point' ? openBuyPoint() : openRecharge())));
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Escape') return;
+  if (!rechargeMask.hidden) closeRecharge();
+  if (!buyPointMask.hidden) closeBuyPoint();
+});
+
+/* ============================================================
+ * 主题（黑色 / 白色）
+ * ============================================================ */
+const THEME_KEY = 'lucky-sim-theme-v1';
+const THEME_MODES = ['auto', 'light', 'dark'];
+let themeMode = 'auto';
+try { const s = localStorage.getItem(THEME_KEY); if (s === 'light' || s === 'dark') themeMode = s; } catch (_) {}
+const prefersLight = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+
+/** auto 跟随系统，否则用指定主题 */
+function resolveTheme(mode) {
+  if (mode === 'light' || mode === 'dark') return mode;
+  return (prefersLight && prefersLight.matches) ? 'light' : 'dark';
+}
+
+function applyTheme(mode) {
+  themeMode = mode;
+  const eff = resolveTheme(mode);
+  document.documentElement.dataset.theme = eff;
+  const b = $('themeToggle');
+  if (b) {
+    b.textContent = mode === 'auto' ? '🌗' : (eff === 'light' ? '☀️' : '🌙');
+    b.title = `主题：${mode === 'auto' ? '自动（跟随系统）' : (eff === 'light' ? '浅色' : '深色')} · 点击切换`;
+  }
+}
+$('themeToggle').addEventListener('click', () => {
+  const next = THEME_MODES[(THEME_MODES.indexOf(themeMode) + 1) % THEME_MODES.length];
+  try { localStorage.setItem(THEME_KEY, next); } catch (_) {}
+  applyTheme(next);
+});
+if (prefersLight && prefersLight.addEventListener) {
+  prefersLight.addEventListener('change', () => { if (themeMode === 'auto') applyTheme('auto'); });
+}
+applyTheme(themeMode);
+
+/* ============================================================
+ * 徽记卡（合成系统）
+ * 数据来源：街头篮球官网 PR.html → 徽记卡规则图（2025-11-13 维护后生效）
+ * ============================================================ */
+const HJK_KEY = 'lucky-sim-hjk-v1';
+
+const HJK_COLORS = [
+  { key: 'red',    name: '红卡', css: '#e5484d', fg: '#ffffff' },
+  { key: 'yellow', name: '黄卡', css: '#e2b453', fg: '#3a2600' },
+  { key: 'green',  name: '绿卡', css: '#5fd39a', fg: '#06301c' },
+  { key: 'blue',   name: '蓝卡', css: '#4da3ff', fg: '#04203f' },
+];
+
+// 效果等级（C/B/A/S/SS/SSS）按星级出现的概率
+const HJK_GRADES = ['C', 'B', 'A', 'S', 'SS', 'SSS'];
+const HJK_GRADE_PROB = {
+  1: [1.00, 0.00, 0.00, 0.00, 0.00, 0.00],
+  2: [0.40, 0.60, 0.00, 0.00, 0.00, 0.00],
+  3: [0.10, 0.60, 0.30, 0.00, 0.00, 0.00],
+  4: [0.00, 0.10, 0.45, 0.45, 0.00, 0.00],
+  5: [0.00, 0.00, 0.10, 0.45, 0.45, 0.00],
+  6: [0.00, 0.00, 0.00, 0.10, 0.45, 0.45],
+  7: [0.00, 0.00, 0.00, 0.00, 0.00, 1.00],
+};
+
+// 各颜色卡的效果池
+const HJK_EFFECTS = {
+  red: ['增加篮板距离', '增加篮板高度', '加快传球速度', '减少被抢断概率', '增加远距离上篮/灌篮距离',
+        '增加直接进攻手移动速度', '增加间接进攻手移动速度', '增加防守状态时的移动速度',
+        '减少被卡位而倒下的概率', '增加快速回防移动速度', '增加干扰投篮距离'],
+  yellow: ['增加灌篮发动概率', '增加灌篮成功率', '抗拒灌篮被盖', '增加上篮成功率', '抗拒上篮被盖',
+           '增加近投成功率', '抗拒近投被盖', '抗拒因冲突而倒下', '抗拒因卡位而倒下',
+           '增加补扣触发概率', '增加补扣成功率'],
+  green: ['增加盖帽距离', '增加盖帽（除了灌篮）概率', '增加抢断速度', '增加抢断概率', '增加自然段概率',
+          '增加Face up移动距离', '增加牵制投篮速度', '增加牵制成功概率', '增加灌篮盖帽概率',
+          '减少传球失误概率', '增加掩护范围'],
+  blue: ['增加中投成功率', '抗拒中投被盖', '增加3分球成功率', '抗拒3分球被盖', '增加中央线投篮成功概率',
+         '增加突破运球移动速度', '增加阻止突破运球概率', '增加阻止背身运球概率', '增加拦截抗性',
+         '增加空位投篮成功率', '增加NicePass概率'],
+};
+
+// 合成表：3 张同星级卡 + 货币 → 升 1 星 / 维持 / 降 1 星
+const HJK_SYNTH = {
+  1: { point: { up: 0.70, keep: 0.30, down: 0.00, cost: 1400  }, coupon: { up: 1.00, keep: 0.00, down: 0.00, cost: 600  } },
+  2: { point: { up: 0.50, keep: 0.30, down: 0.20, cost: 2800  }, coupon: { up: 1.00, keep: 0.00, down: 0.00, cost: 1200 } },
+  3: { point: { up: 0.30, keep: 0.60, down: 0.10, cost: 5600  }, coupon: { up: 0.60, keep: 0.40, down: 0.00, cost: 1800 } },
+  4: { point: { up: 0.20, keep: 0.75, down: 0.05, cost: 11200 }, coupon: { up: 0.40, keep: 0.60, down: 0.00, cost: 2400 } },  // 原图 4星积分 20/65/5 仅 90%，按维持补齐为 75%
+  5: { point: { up: 0.15, keep: 0.80, down: 0.05, cost: 22400 }, coupon: { up: 0.25, keep: 0.75, down: 0.00, cost: 3000 } },
+  6: { point: { up: 0.05, keep: 0.90, down: 0.05, cost: 30000 }, coupon: { up: 0.10, keep: 0.90, down: 0.00, cost: 3500 } },
+  7: { point: { up: 0.00, keep: 0.95, down: 0.05, cost: 60000 }, coupon: { up: 0.00, keep: 1.00, down: 0.00, cost: 4000 } },
+};
+
+// 黄金徽记卡包：开出随机颜色的 1~3 星卡
+const HJK_PACK = {
+  name: '黄金徽记卡',
+  priceSingle: 350,  // 1 个
+  priceBulk: 336,    // ≥10 个时的单价
+  bulkMin: 10,
+  maxQty: 1000,
+  starProb: { 1: 0.20, 2: 0.30, 3: 0.50 },
+};
+
+/* ---- 状态 ---- */
+// 每张卡：{ color, star, effects: [{ grade, name }] }
+let hjk;
+try { hjk = JSON.parse(localStorage.getItem(HJK_KEY)) || null; } catch (_) { hjk = null; }
+if (!hjk || typeof hjk !== 'object') hjk = {};
+if (!Array.isArray(hjk.cards)) hjk.cards = [];
+
+// 兼容旧版「按数量存」的库存（{ inv: { red:[7], ... } }）→ 迁移成逐张卡并补生成效果
+let hjkMigrated = false;
+if (hjk.inv && typeof hjk.inv === 'object') {
+  for (const c of HJK_COLORS) {
+    const arr = hjk.inv[c.key];
+    if (!Array.isArray(arr)) continue;
+    for (let i = 0; i < arr.length; i++) {
+      for (let k = 0; k < Math.floor(arr[i] || 0); k++) hjk.cards.push(hjkMakeCard(c.key, i + 1));
+    }
+  }
+  delete hjk.inv;
+  hjkMigrated = true;
+}
+
+// 清洗：丢弃结构不对的卡，补齐缺失/不完整的效果
+hjk.cards = hjk.cards
+  .filter(c => c && HJK_EFFECTS[c.color] && Number.isInteger(c.star) && c.star >= 1 && c.star <= 7)
+  .map(c => ({
+    color: c.color,
+    star: c.star,
+    effects: (Array.isArray(c.effects) && c.effects.length === c.star)
+      ? c.effects.map(e => ({
+          grade: (e && HJK_GRADES.includes(e.grade)) ? e.grade : 'C',
+          name: String((e && e.name) || ''),
+        }))
+      : hjkMakeCard(c.color, c.star).effects,
+  }));
+
+function saveHjk() { try { localStorage.setItem(HJK_KEY, JSON.stringify(hjk)); } catch (_) {} }
+if (hjkMigrated) saveHjk();
+
+let hjkQtyVal = 1;
+let hjkTimes = 1;         // 合成次数：1 / 10 / 100（每 3 张一次）
+let hjkBatchTarget = 2;   // 一键合成的目标星级（用 target-1 星的卡）
+let hjkLast = null;
+
+/* ---- 工具 ---- */
+const hjkColorByKey = k => HJK_COLORS.find(c => c.key === k);
+const hjkCardsOf = (colorKey, star) => hjk.cards.filter(c => c.star === star && c.color === colorKey);
+const hjkCountByStar = star => hjk.cards.reduce((s, c) => s + (c.star === star ? 1 : 0), 0);
+const hjkPackCost = qty => qty * (qty >= HJK_PACK.bulkMin ? HJK_PACK.priceBulk : HJK_PACK.priceSingle);
+
+/** 按权重返回下标 */
+function pickWeighted(w) {
+  const total = w.reduce((a, b) => a + b, 0);
+  if (total <= 0) return 0;
+  let r = rand() * total;
+  for (let i = 0; i < w.length; i++) { r -= w[i]; if (r < 0) return i; }
+  return w.length - 1;
+}
+
+/** 扣钱，余额不足返回 false */
+function trySpend(cur, amount) {
+  if (wallet[cur] < amount) {
+    toast(`${CURRENCIES[cur].name}不足（需 ${fmtNum(amount)}）`);
+    return false;
+  }
+  wallet[cur] -= amount;
+  saveWallet();
+  renderWallet();
+  return true;
+}
+
+/** 消耗 n 张 star 星卡，按各颜色数量从多到少取（颜色不限） */
+function hjkConsume(star, n) {
+  let need = n;
+  const keys = HJK_COLORS.map(c => c.key)
+    .sort((a, b) => hjkCardsOf(b, star).length - hjkCardsOf(a, star).length);
+  for (const k of keys) {
+    if (need <= 0) break;
+    let take = Math.min(need, hjkCardsOf(k, star).length);
+    if (take <= 0) continue;
+    need -= take;
+    hjk.cards = hjk.cards.filter(c => {
+      if (take > 0 && c.star === star && c.color === k) { take--; return false; }
+      return true;
+    });
+  }
+}
+
+/** 生成一张卡：N 星有 N 个效果，每个效果按星级概率随机等级，再从颜色池随机效果名 */
+function hjkMakeCard(colorKey, star) {
+  const probs = HJK_GRADE_PROB[star];
+  const pool = HJK_EFFECTS[colorKey];
+  const effects = [];
+  for (let i = 0; i < star; i++) {
+    effects.push({
+      grade: HJK_GRADES[pickWeighted(probs)],
+      name: pool[Math.floor(rand() * pool.length)],
+    });
+  }
+  return { color: colorKey, star, effects };
+}
+
+const hjkRandColor = () => HJK_COLORS[Math.floor(rand() * HJK_COLORS.length)].key;
+
+/* ---- 操作 ---- */
+function hjkOpen(qty) {
+  qty = Math.max(1, Math.min(HJK_PACK.maxQty, Math.floor(qty) || 1));
+  const cost = hjkPackCost(qty);
+  if (!trySpend('coupon', cost)) return;
+
+  const results = [];
+  const byStar = { 1: 0, 2: 0, 3: 0 };
+  for (let i = 0; i < qty; i++) {
+    const star = pickWeighted([HJK_PACK.starProb[1], HJK_PACK.starProb[2], HJK_PACK.starProb[3]]) + 1;
+    const color = hjkRandColor();
+    const card = hjkMakeCard(color, star);
+    hjk.cards.push(card);
+    byStar[star]++;
+    results.push(card);
+  }
+  saveHjk();
+  hjkLast = { type: 'pack', qty, cost, byStar, results };
+  renderHjk();
+  toast(`开包 ${qty} 个：1★ ${byStar[1]} · 2★ ${byStar[2]} · 3★ ${byStar[3]}`);
+}
+
+/** 执行 times 次 star 星合成（消耗 3×times 张卡 + times 倍货币） */
+function hjkRunSynth(star, cur, times) {
+  const cfg = HJK_SYNTH[star][cur];
+  const need = 3 * times;
+  if (hjkCountByStar(star) < need) { toast(`${star}★ 卡不足 ${need} 张`); return; }
+  if (!trySpend(cur, cfg.cost * times)) return;
+
+  hjkConsume(star, need);
+  const results = [];
+  let up = 0, keep = 0, down = 0;
+  for (let i = 0; i < times; i++) {
+    const r = rand();
+    const to = r < cfg.up ? star + 1 : (r < cfg.up + cfg.keep ? star : star - 1);
+    if (to > star) up++; else if (to < star) down++; else keep++;
+    const color = hjkRandColor();
+    const card = hjkMakeCard(color, to);
+    hjk.cards.push(card);
+    results.push(card);
+  }
+
+  saveHjk();
+  hjkLast = { type: 'synth', from: star, times, cur, cost: cfg.cost * times, results, up, keep, down };
+  renderHjk();
+  if (times === 1) {
+    const to = results[0].star;
+    const move = to > star ? '升级' : (to < star ? '降级' : '维持');
+    toast(`合成${move}：${star}★ → ${to}★`);
+  } else {
+    toast(`${star}★ 合成 ×${times}：升级 ${up} · 维持 ${keep} · 降级 ${down}`);
+  }
+}
+
+function hjkSynth(star, cur, times) { hjkRunSynth(star, cur, times || 1); }
+
+/** 一键合成的方案：目标星级 target 会用「target-1 星」的全部卡 */
+function hjkBatchPlan(target, cur) {
+  const src = target - 1;
+  const have = hjkCountByStar(src);
+  const times = Math.floor(have / 3);
+  const cost = HJK_SYNTH[src][cur].cost * times;
+  return { src, have, times, cost, ok: times >= 1 && wallet[cur] >= cost };
+}
+
+/** 一键合成：把 target-1 星的卡全部投入 */
+function hjkBatch(target, cur) {
+  const plan = hjkBatchPlan(target, cur);
+  if (plan.times < 1) { toast(`${plan.src}★ 卡不足 3 张`); return; }
+  hjkRunSynth(plan.src, cur, plan.times);
+}
+
+/* ---- 渲染 ---- */
+function hjkCardHtml(card) {
+  const c = hjkColorByKey(card.color);
+  return `<div class="panel-card" style="--cc:${c.css}; --fg:${c.fg}">
+    <div class="hc-top"><span class="hc-star">${card.star}★</span><span class="hc-color">${c.name}</span></div>
+    <div class="hc-eff">${card.effects.map(e =>
+      `<div class="e"><span class="g g-${e.grade}">${e.grade}</span><span>${e.name}</span></div>`).join('')}</div>
+  </div>`;
+}
+
+function renderHjk() {
+  const panel = $('hjkPanel');
+  const stars = [1, 2, 3, 4, 5, 6, 7];
+
+  // 库存表
+  let inv = '<table class="hjk-inv"><thead><tr><th style="text-align:left">颜色</th>'
+    + stars.map(n => `<th class="clickable" data-star-all="${n}" title="查看全部 ${n}★ 卡">${n}★</th>`).join('') + '</tr></thead><tbody>';
+  for (const c of HJK_COLORS) {
+    inv += `<tr><td class="cc ${c.key} clickable" data-color-all="${c.key}" title="查看${c.name}全部星级">${c.name}</td>`
+      + stars.map(n => {
+          const v = hjkCardsOf(c.key, n).length;
+          return v
+            ? `<td class="has clickable" data-color="${c.key}" data-star="${n}" title="查看这 ${v} 张卡">${v}</td>`
+            : '<td class="zero">0</td>';
+        }).join('') + '</tr>';
+  }
+  inv += '<tr><td class="cc" style="color:var(--text-2)">合计</td>'
+    + stars.map(n => {
+        const v = hjkCountByStar(n);
+        return v
+          ? `<td class="has clickable" data-star-all="${n}" title="查看全部 ${n}★ 卡">${v}</td>`
+          : '<td class="zero">0</td>';
+      }).join('') + '</tr></tbody></table>';
+
+  // 合成行（按当前合成次数计算需求与消耗）
+  const need = 3 * hjkTimes;
+  let synth = '';
+  for (const n of stars) {
+    const have = hjkCountByStar(n);
+    const p = HJK_SYNTH[n].point, c = HJK_SYNTH[n].coupon;
+    const okP = have >= need && wallet.point >= p.cost * hjkTimes;
+    const okC = have >= need && wallet.coupon >= c.cost * hjkTimes;
+    synth += `<div class="hjk-srow">
+      <span class="hs-star">${n}★<small>×${have}</small></span>
+      <button class="hs-btn" data-synth="${n}" data-cur="point"${okP ? '' : ' disabled'}>积分合成 <b>${fmtNum(p.cost * hjkTimes)}</b></button>
+      <button class="hs-btn" data-synth="${n}" data-cur="coupon"${okC ? '' : ' disabled'}>点券合成 <b>${fmtNum(c.cost * hjkTimes)}</b></button>
+    </div>`;
+  }
+
+  // 一键合成方案（目标星级用「目标-1 星」的全部卡）
+  const bSrc = hjkBatchTarget - 1;
+  const bHave = hjkCountByStar(bSrc);
+  const bTimes = Math.floor(bHave / 3);
+  const bCostP = HJK_SYNTH[bSrc].point.cost * bTimes;
+  const bCostC = HJK_SYNTH[bSrc].coupon.cost * bTimes;
+  const bOkP = bTimes >= 1 && wallet.point >= bCostP;
+  const bOkC = bTimes >= 1 && wallet.coupon >= bCostC;
+
+  // 最近结果
+  let res = '<div class="panel-empty">还没有操作记录</div>';
+  if (hjkLast && hjkLast.type === 'synth') {
+    const t = hjkLast;
+    const to = t.results[0].star;
+    const head = t.times > 1
+      ? `${t.from}★ 合成 ×${t.times} · 消耗 ${3 * t.times} 张 ${t.from}★ + ${fmtNum(t.cost)} ${CURRENCIES[t.cur].name}　升级 <b>${t.up}</b> · 维持 <b>${t.keep}</b> · 降级 <b>${t.down}</b>`
+      : `${t.from}★ → <b>${to}★</b>（${to > t.from ? '升级' : to < t.from ? '降级' : '维持'}）· 消耗 3 张 ${t.from}★ + ${fmtNum(t.cost)} ${CURRENCIES[t.cur].name}`;
+    const shownR = t.results.slice(0, 60);
+    res = `<div class="panel-sum">${head}</div>`
+      + '<div class="panel-cards">' + shownR.map(hjkCardHtml).join('') + '</div>'
+      + (t.results.length > shownR.length ? `<div class="panel-note" style="margin-top:8px">仅展示前 ${shownR.length} 张，共 ${t.results.length} 张</div>` : '');
+  } else if (hjkLast && hjkLast.type === 'pack') {
+    const t = hjkLast;
+    const shown = t.results.slice(0, 60);
+    res = `<div class="panel-sum">开包 ${t.qty} 个「${HJK_PACK.name}」· 花费 ${fmtNum(t.cost)} 点券　`
+      + `1★ <b>${t.byStar[1]}</b> · 2★ <b>${t.byStar[2]}</b> · 3★ <b>${t.byStar[3]}</b></div>`
+      + '<div class="panel-cards">' + shown.map(r => {
+          const c = hjkColorByKey(r.color);
+          return `<div class="panel-card mini" style="--cc:${c.css}; --fg:${c.fg}"><div class="hc-top"><span class="hc-star">${r.star}★</span><span class="hc-color">${c.name}</span></div></div>`;
+        }).join('') + '</div>'
+      + (t.results.length > shown.length ? `<div class="panel-note" style="margin-top:8px">仅展示前 ${shown.length} 张，共 ${t.qty} 张</div>` : '');
+  }
+
+  panel.innerHTML = `
+    <div class="panel-box">
+      <div class="panel-title">我的徽记卡 <span class="panel-sub">按颜色 / 星级 · 点数字或颜色名可查看卡片</span></div>
+      ${inv}
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">开卡包 · ${HJK_PACK.name}</div>
+      <div class="panel-note">
+        开出随机颜色的 1~3 星卡（3★ 50% / 2★ 30% / 1★ 20%，四色均等）<br>
+        单价 1 个 ${HJK_PACK.priceSingle} 点券，≥${HJK_PACK.bulkMin} 个 ${HJK_PACK.priceBulk} 点券/个，一次最多 ${HJK_PACK.maxQty} 个
+      </div>
+      <div class="panel-buy">
+        <input type="number" id="hjkQty" min="1" max="${HJK_PACK.maxQty}" value="${hjkQtyVal}">
+        <button class="buy-btn" id="hjkBuy">开包 <b id="hjkCost">${fmtNum(hjkPackCost(hjkQtyVal))}</b> 点券</button>
+      </div>
+      <div class="panel-quick">
+        <button data-qty="1">1 个</button>
+        <button data-qty="10">10 个</button>
+        <button data-qty="50">50 个</button>
+        <button data-qty="1000">1000 个</button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">一键合成 <span class="panel-sub">把某一星级的所有卡一次性投入</span></div>
+      <div class="panel-note">选目标星级，会投入当前「目标星级 − 1」的全部卡（每 3 张合成 1 次）。例：一键合成 2★ = 把当前所有 1★ 卡投入。</div>
+      <div class="panel-quick">
+        ${[2, 3, 4, 5, 6, 7].map(t =>
+          `<button data-target="${t}"${t === hjkBatchTarget ? ' class="active"' : ''}>${t}★</button>`).join('')}
+      </div>
+      <div class="panel-note" style="margin:10px 0 0">
+        当前 <b class="hl">${bSrc}★</b> 共 <b class="hl">${bHave}</b> 张 → 可合成 <b class="hl">${bTimes}</b> 次
+      </div>
+      <div class="panel-buy" style="margin-top:10px">
+        <button class="buy-btn" data-batch="point"${bOkP ? '' : ' disabled'}>积分一键合成 <b>${fmtNum(bCostP)}</b></button>
+        <button class="buy-btn" data-batch="coupon"${bOkC ? '' : ' disabled'}>点券一键合成 <b>${fmtNum(bCostC)}</b></button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">合成 <span class="panel-sub">同星级卡 + 货币（颜色不限，结果颜色随机）</span></div>
+      <div class="panel-tabs">
+        <button data-times="1" class="${hjkTimes === 1 ? 'active' : ''}">单次（3 张）</button>
+        <button data-times="10" class="${hjkTimes === 10 ? 'active' : ''}">十连（30 张）</button>
+        <button data-times="100" class="${hjkTimes === 100 ? 'active' : ''}">百连（300 张）</button>
+      </div>
+      ${synth}
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">最近结果</div>
+      ${res}
+    </div>`;
+
+  bindHjk();
+}
+
+function bindHjk() {
+  const qty = $('hjkQty');
+  if (qty) {
+    qty.addEventListener('input', () => {
+      const raw = Math.floor(Number(qty.value) || 0);
+      hjkQtyVal = Math.max(1, Math.min(HJK_PACK.maxQty, raw || 1));
+      $('hjkCost').textContent = fmtNum(hjkPackCost(hjkQtyVal));
+    });
+    qty.addEventListener('change', () => { qty.value = hjkQtyVal; });
+  }
+  const buy = $('hjkBuy');
+  if (buy) buy.addEventListener('click', () => hjkOpen(hjkQtyVal));
+
+  document.querySelectorAll('#hjkPanel .panel-quick button[data-qty]').forEach(b =>
+    b.addEventListener('click', () => { hjkQtyVal = Number(b.dataset.qty); renderHjk(); }));
+
+  document.querySelectorAll('#hjkPanel button[data-target]').forEach(b =>
+    b.addEventListener('click', () => { hjkBatchTarget = Number(b.dataset.target); renderHjk(); }));
+
+  document.querySelectorAll('#hjkPanel button[data-batch]').forEach(b =>
+    b.addEventListener('click', () => hjkBatch(hjkBatchTarget, b.dataset.batch)));
+
+  document.querySelectorAll('#hjkPanel .panel-tabs button').forEach(b =>
+    b.addEventListener('click', () => { hjkTimes = Number(b.dataset.times); renderHjk(); }));
+
+  document.querySelectorAll('#hjkPanel .hs-btn').forEach(b =>
+    b.addEventListener('click', () => hjkSynth(Number(b.dataset.synth), b.dataset.cur, hjkTimes)));
+
+  document.querySelectorAll('#hjkPanel td[data-color][data-star]').forEach(td =>
+    td.addEventListener('click', () => openHjkDetail({ color: td.dataset.color, star: Number(td.dataset.star) })));
+  document.querySelectorAll('#hjkPanel td[data-color-all]').forEach(td =>
+    td.addEventListener('click', () => openHjkDetail({ color: td.dataset.colorAll })));
+  document.querySelectorAll('#hjkPanel [data-star-all]').forEach(el =>
+    el.addEventListener('click', () => openHjkDetail({ star: Number(el.dataset.starAll) })));
+}
+
+/* ---- 卡片详情（滚动到底自动加载） ---- */
+const HJK_PAGE_SIZE = 60;   // 每批追加的张数
+let hjkDetail = null;       // { color?, star? }，缺省表示不限
+let hjkDetailList = [];     // 当前筛选下的全部卡
+let hjkDetailShown = 0;     // 已渲染张数
+
+function hjkFilterCards(f) {
+  return hjk.cards.filter(c =>
+    (f.color == null || c.color === f.color) && (f.star == null || c.star === f.star));
+}
+
+function hjkDetailModal() { return $('hjkDetailMask').querySelector('.modal'); }
+
+function hjkDetailTitleText(f, total) {
+  let t;
+  if (f.color != null && f.star != null) t = `${hjkColorByKey(f.color).name} · ${f.star}★`;
+  else if (f.color != null) t = `${hjkColorByKey(f.color).name} · 全部星级`;
+  else if (f.star != null) t = `${f.star}★ · 全部颜色`;
+  else t = '全部徽记卡';
+  return `${t}（共 ${total} 张）`;
+}
+
+function openHjkDetail(filter) {
+  hjkDetail = filter || {};
+  hjkDetailList = hjkFilterCards(hjkDetail);
+  hjkDetailShown = 0;
+  $('hjkDetailTitle').textContent = hjkDetailTitleText(hjkDetail, hjkDetailList.length);
+  $('hjkDetailBody').innerHTML = hjkDetailList.length
+    ? '' : '<div class="panel-empty" style="grid-column:1/-1">没有卡片</div>';
+  $('hjkDetailMask').hidden = false;
+  const m = hjkDetailModal();
+  if (m) m.scrollTop = 0;
+  loadMoreHjkDetail();
+}
+
+/** 再追加一批；滑到底部时自动调用 */
+function loadMoreHjkDetail() {
+  if (!hjkDetail) return;
+  const next = hjkDetailList.slice(hjkDetailShown, hjkDetailShown + HJK_PAGE_SIZE);
+  if (next.length) {
+    $('hjkDetailBody').insertAdjacentHTML('beforeend', next.map(hjkCardHtml).join(''));
+    hjkDetailShown += next.length;
+  }
+  $('hjkDetailMore').textContent = !hjkDetailList.length ? ''
+    : (hjkDetailShown < hjkDetailList.length
+        ? `向下滚动加载更多…（已显示 ${hjkDetailShown} / ${hjkDetailList.length}）`
+        : `已全部加载（共 ${hjkDetailList.length} 张）`);
+}
+
+function closeHjkDetail() { $('hjkDetailMask').hidden = true; }
+
+$('hjkDetailClose').addEventListener('click', closeHjkDetail);
+$('hjkDetailMask').addEventListener('click', e => { if (e.target === $('hjkDetailMask')) closeHjkDetail(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && !$('hjkDetailMask').hidden) closeHjkDetail(); });
+
+// 滑到接近底部就自动加载下一批
+hjkDetailModal().addEventListener('scroll', e => {
+  const m = e.currentTarget;
+  if (m.scrollTop + m.clientHeight >= m.scrollHeight - 240) loadMoreHjkDetail();
+});
+
+/* ============================================================
+ * 能力随机卡（超级能力加强包随机卡）
+ * 奖励 = 能力值 +N & 积分加成 +M%（M 由 N 决定，见 bonus）
+ * ============================================================ */
+const ABILITY = {
+  name: '超级能力加强包随机卡',
+  price: 200,                                         // 点券 / 次
+  probs: [0.50, 0.4898999, 0.01, 0.0001, 0.0000001],  // 能力 +1 ~ +5
+  bonus: { 1: 150, 2: 120, 3: 90, 4: 60, 5: 30 },     // 对应的积分加成 %
+};
+const ABIL_MAX_DRAWS = 1000000;   // 单次点击最多抽这么多次，防极端情况卡死
+
+let abilTarget = 3;
+let abilLast = null;
+let abilRun = null;               // 当前目标的累计 { target, draws, spent, tally }
+
+const fmtProb = p => (p * 100).toFixed(7).replace(/\.?0+$/, '') + '%';
+const abilRoll = () => pickWeighted(ABILITY.probs) + 1;
+const abilChip = (v, big) => `<span class="abil-chip ab${v}${big ? ' big' : ''}">能力+${v}</span>`;
+const abilBonus = (v, big) => `<span class="abil-bonus${big ? ' big' : ''}">积分+${ABILITY.bonus[v]}%</span>`;
+const abilPair = (v, big) => `${abilChip(v, big)} ${abilBonus(v, big)}`;
+const abilPairText = v => `能力+${v} & 积分+${ABILITY.bonus[v]}%`;
+const abilPairHtml = v => `能力+${v} &amp; 积分+${ABILITY.bonus[v]}%`;
+
+function abilResetRun() { abilRun = null; abilLast = null; }
+
+function abilOne() {
+  if (!trySpend('coupon', ABILITY.price)) return;
+  const v = abilRoll();
+  abilLast = { type: 'one', value: v };
+  renderAbil();
+  toast(`抽到 ${abilPairText(v)}`);
+}
+
+/** 连续购买：累计抽到目标属性出现为止（受点券限制，累计跨多次点击） */
+function abilRush() {
+  const target = abilTarget, PRICE = ABILITY.price;
+  if (!abilRun || abilRun.target !== target) abilRun = { target, draws: 0, spent: 0, tally: [0, 0, 0, 0, 0] };
+
+  let done = 0, hit = false;
+  while (done < ABIL_MAX_DRAWS && wallet.coupon >= PRICE) {
+    wallet.coupon -= PRICE;
+    abilRun.spent += PRICE; abilRun.draws++; done++;
+    const v = abilRoll();
+    abilRun.tally[v - 1]++;
+    if (v === target) { hit = true; break; }
+  }
+  if (done > 0) { saveWallet(); renderWallet(); }
+
+  abilLast = {
+    type: 'rush', target, hit,
+    draws: abilRun.draws, spent: abilRun.spent, tally: abilRun.tally.slice(),
+    broke: !hit && wallet.coupon < PRICE,
+  };
+  if (hit) abilRun = null;   // 只有达到目标才清除累计
+  renderAbil();
+  toast(hit
+    ? `抽中 ${abilPairText(target)}：累计 ${fmtNum(abilLast.draws)} 次 · 花费 ${fmtNum(abilLast.spent)} 点券`
+    : `已累计 ${fmtNum(abilLast.draws)} 次 · 花费 ${fmtNum(abilLast.spent)} 点券（目标未出现）`);
+}
+
+function renderAbil() {
+  const panel = $('abilPanel');
+  const p = ABILITY.probs[abilTarget - 1];
+  const mean = 1 / p;
+  const meanTxt = mean >= 100 ? fmtNum(Math.round(mean)) : mean.toFixed(1);
+  const meanCost = fmtNum(Math.round(mean * ABILITY.price));
+
+  const probs = ABILITY.probs.map((pr, i) =>
+    `<div class="abil-row"><span class="l">${abilChip(i + 1)}${abilBonus(i + 1)}</span><b>${fmtProb(pr)}</b></div>`).join('');
+
+  const targets = [5, 4, 3, 2, 1].map(v =>
+    `<button class="abil-target${v === abilTarget ? ' active' : ''}" data-abil-target="${v}">
+      <span class="box">✓</span><span>能力值 +${v} &amp; 积分 +${ABILITY.bonus[v]}%</span>
+    </button>`).join('');
+
+  let res = '<div class="panel-empty">还没有操作记录</div>';
+  if (abilLast && abilLast.type === 'one') {
+    res = `<div class="panel-sum">抽到 ${abilPair(abilLast.value, true)}</div>`;
+  } else if (abilLast && abilLast.type === 'rush') {
+    const t = abilLast;
+    const head = t.hit
+      ? `抽中 ${abilPair(t.target, true)} · 累计抽 <b>${fmtNum(t.draws)}</b> 次 · 花费 <b>${fmtNum(t.spent)}</b> 点券`
+      : `已累计 <b>${fmtNum(t.draws)}</b> 次 · 花费 <b>${fmtNum(t.spent)}</b> 点券 · 仍未出现 ${abilPairText(t.target)}${t.broke ? '（点券不足）' : ''}`;
+    const diff = t.tally.map((c, i) => `<span class="d">${abilChip(i + 1)} × <b>${fmtNum(c)}</b></span>`).join('');
+    res = `<div class="panel-sum">${head}</div><div class="abil-diff">${diff}</div>`;
+  }
+
+  const running = !!abilRun;
+  panel.innerHTML = `
+    <div class="panel-box">
+      <div class="panel-title">${ABILITY.name} <span class="panel-sub">${ABILITY.price} 点券 / 次</span></div>
+      <div class="panel-note">每次随机得到 1 种「能力值 + 积分加成」，概率如下：</div>
+      <div class="abil-probs">${probs}</div>
+      <div class="panel-buy" style="margin-top:12px">
+        <button class="buy-btn" id="abilOne"${wallet.coupon >= ABILITY.price ? '' : ' disabled'}>抽 1 次 <b>${ABILITY.price}</b> 点券</button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">连续购买 <span class="panel-sub">累计抽到目标属性出现为止</span></div>
+      <div class="panel-note">选目标，会一直抽到它出现（受点券限制）。<b>次数与花费累计统计，直到抽中目标才清零。</b></div>
+      <div class="abil-targets">${targets}</div>
+      <div class="panel-note" style="margin:10px 0 0">
+        目标 <b class="hl">${abilPairHtml(abilTarget)}</b> · 概率 <b class="hl">${fmtProb(p)}</b> · 期望约 <b class="hl">${meanTxt}</b> 次（约 <b class="hl">${meanCost}</b> 点券）
+        ${running ? `<br>当前已累计 <b class="hl">${fmtNum(abilRun.draws)}</b> 次 · <b class="hl">${fmtNum(abilRun.spent)}</b> 点券` : ''}
+      </div>
+      <div class="panel-buy" style="margin-top:10px">
+        <button class="buy-btn" id="abilRush"${wallet.coupon >= ABILITY.price ? '' : ' disabled'}>${running ? '继续连续购买' : '开始连续购买'}</button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">最近结果</div>
+      ${res}
+    </div>`;
+
+  bindAbil();
+}
+
+function bindAbil() {
+  const one = $('abilOne');
+  if (one) one.addEventListener('click', abilOne);
+  const rush = $('abilRush');
+  if (rush) rush.addEventListener('click', abilRush);
+  document.querySelectorAll('#abilPanel button[data-abil-target]').forEach(b =>
+    b.addEventListener('click', () => {
+      const v = Number(b.dataset.abilTarget);
+      if (v !== abilTarget) { abilTarget = v; abilResetRun(); }   // 换目标即清零累计
+      renderAbil();
+    }));
+}
+
+/* ============================================================
+ * 周宝箱（免费开箱）
+ * 数据来源：街头篮球官网周宝箱规则图；掉落表用 2026-09-22 维护后版本
+ * ============================================================ */
+const WBOX_LEVELS = ['青铜', '白银', '黄金', '铂金', '钻石'];
+const WBOX_SUBS = ['V', 'IV', 'III', 'II', 'I'];
+
+const WEEKBOX = {
+  // 随机奖励数量：等级 -> 细分等级
+  count: {
+    青铜: { V: 4, IV: 5, III: 6, II: 7, I: 8 },
+    白银: { V: 5, IV: 6, III: 7, II: 8, I: 9 },
+    黄金: { V: 6, IV: 7, III: 8, II: 9, I: 10 },
+    铂金: { V: 5, IV: 6, III: 7, II: 8, I: 9 },
+    钻石: { V: 1, IV: 3, III: 5, II: 7, I: 9 },
+  },
+  // 品质确保奖励 + 随机奖励品质概率
+  quality: {
+    青铜: { sure: '蓝色', rand: [{ q: '紫色', p: 0.15 }, { q: '蓝色', p: 0.85 }] },
+    白银: { sure: '紫色', rand: [{ q: '红色', p: 0.05 }, { q: '紫色', p: 0.15 }, { q: '蓝色', p: 0.80 }] },
+    黄金: { sure: '红色', rand: [{ q: '红色', p: 0.05 }, { q: '紫色', p: 0.15 }, { q: '蓝色', p: 0.80 }] },
+    铂金: { sure: '红色', rand: [{ q: '黄金', p: 0.01 }, { q: '红色', p: 0.05 }, { q: '紫色', p: 0.94 }] },
+    钻石: { sure: '黄金', rand: [{ q: '黄金', p: 0.01 }, { q: '红色', p: 0.05 }, { q: '紫色', p: 0.94 }] },
+  },
+  // 掉落表（2026-09-22 维护后）
+  drops: {
+    黄金: [
+      { name: '4星特殊精锐队伍徽记卡', amount: '1', p: 0.50 },
+      { name: '5星三国徽记卡', amount: '1', p: 0.42 },
+      { name: '徽记卡转送券', amount: '1', p: 0.05 },
+      { name: '洛克斯变更卡', amount: '1', p: 0.01 },
+      { name: '杰罗变更卡', amount: '1', p: 0.01 },
+      { name: '艾达变更卡', amount: '1', p: 0.01 },
+    ],
+    红色: [
+      { name: '4星三国徽记卡', amount: '3', p: 0.15 },
+      { name: '高级徽记卡', amount: '10', p: 0.15 },
+      { name: '技能包5格', amount: '永久', p: 0.20 },
+      { name: 'VVIP', amount: '30天', p: 0.30 },
+      { name: '新更改服装&装饰外形礼包', amount: '7天', p: 0.20 },
+    ],
+    紫色: [
+      { name: '笑脸篮子', amount: '1', p: 0.10 },
+      { name: '超级能力加强包', amount: '30天', p: 0.10 },
+      { name: '精锐队伍徽记卡', amount: '5', p: 0.20 },
+      { name: '完整的强化碎片箱钥匙', amount: '30', p: 0.20 },
+      { name: '完整的创建碎片箱钥匙', amount: '30', p: 0.20 },
+      { name: '完整的道具碎片箱钥匙', amount: '60', p: 0.20 },
+    ],
+    蓝色: [
+      { name: '黄金徽记卡', amount: '2', p: 0.15 },
+      { name: '精锐队伍徽记卡', amount: '1', p: 0.15 },
+      { name: '完整的强化碎片箱钥匙', amount: '10', p: 0.10 },
+      { name: '完整的创建碎片箱钥匙', amount: '10', p: 0.10 },
+      { name: '完整的道具碎片箱钥匙', amount: '10', p: 0.10 },
+      { name: '完整的普通碎片箱钥匙', amount: '10', p: 0.20 },
+      { name: '笑脸', amount: '25', p: 0.10 },
+      { name: '积分', amount: '30000', p: 0.10 },
+    ],
+  },
+};
+
+let boxLevel = '青铜';
+let boxSub = 'V';
+let boxLast = null;   // 最近一次开箱结果
+
+function boxRollItem(quality) {
+  const table = WEEKBOX.drops[quality];
+  const d = table[pickWeighted(table.map(x => x.p))];
+  return { quality, name: d.name, amount: d.amount };
+}
+
+/** 按等级 + 细分抽一次完整奖励 */
+function boxRollOnce(level, sub) {
+  const q = WEEKBOX.quality[level];
+  const sure = boxRollItem(q.sure);
+  const rand = [];
+  for (let i = 0; i < WEEKBOX.count[level][sub]; i++) {
+    const qual = q.rand[pickWeighted(q.rand.map(r => r.p))].q;
+    rand.push(boxRollItem(qual));
+  }
+  return { sure, rand };
+}
+
+/** 开箱（免费）：直接出结果，抽到的「积分」立即入账 */
+function boxOpen() {
+  const r = boxRollOnce(boxLevel, boxSub);
+  let gained = 0;
+  for (const x of [r.sure, ...r.rand]) if (x.name === '积分') gained += Number(x.amount) || 0;
+  if (gained) { wallet.point += gained; saveWallet(); renderWallet(); }
+
+  boxLast = { level: boxLevel, sub: boxSub, sure: r.sure, rand: r.rand, gained };
+  renderBox();
+  toast(`开箱 ${boxLevel} ${boxSub}：确保 ${r.sure.name} + 随机 ${r.rand.length} 个${gained ? ` · 积分 +${fmtNum(gained)}` : ''}`);
+}
+
+function boxItemHtml(r, sure, i) {
+  return `<div class="prize ${r.quality}" style="animation-delay:${Math.min((i || 0) * 22, 900)}ms">
+    ${sure ? '<span class="sure-tag">确保</span>' : ''}
+    <div class="badge">${r.quality}</div>
+    <div class="ic">${itemIconHtml(r.name, 'ic-img')}</div>
+    <div class="nm">${r.name}</div>
+    <div class="amt">×${r.amount}</div>
+  </div>`;
+}
+
+function renderBox() {
+  const panel = $('wboxPanel');
+  const q = WEEKBOX.quality[boxLevel];
+  const n = WEEKBOX.count[boxLevel][boxSub];
+  const randTxt = q.rand.map(r => `${r.q} ${fmtProb(r.p)}`).join(' / ');
+
+  let res = '<div class="panel-empty">还没有开箱记录</div>';
+  if (boxLast) {
+    const t = boxLast;
+    res = `<div class="panel-sum">开箱 <b>${t.level} ${t.sub}</b> · 确保 <b>${t.sure.quality}</b> · 随机 <b>${t.rand.length}</b> 个${t.gained ? ` · 积分 +<b>${fmtNum(t.gained)}</b>（已入账）` : ''}</div>
+      <div class="box-items">${[t.sure, ...t.rand].map((r, i) => boxItemHtml(r, i === 0, i)).join('')}</div>`;
+  }
+
+  panel.innerHTML = `
+    <div class="panel-box">
+      <div class="panel-title">周宝箱 <span class="panel-sub">免费开箱</span></div>
+      <div class="panel-note">选等级与细分等级；开箱得到 1 个「品质确保」奖励 + N 个随机奖励。</div>
+      <div class="panel-quick" style="margin-top:10px">
+        ${WBOX_LEVELS.map(l => `<button data-box-level="${l}"${l === boxLevel ? ' class="active"' : ''}>${l}</button>`).join('')}
+      </div>
+      <div class="panel-quick" style="margin-top:8px">
+        ${WBOX_SUBS.map(s => `<button data-box-sub="${s}"${s === boxSub ? ' class="active"' : ''}>${s}</button>`).join('')}
+      </div>
+      <div class="panel-note" style="margin:10px 0 0">
+        <b class="hl">${boxLevel} ${boxSub}</b>：确保 <b class="hl">${q.sure}</b> · 随机 <b class="hl">${n}</b> 个（${randTxt}）
+      </div>
+      <div class="panel-buy" style="margin-top:10px">
+        <button class="buy-btn" id="boxOpenBtn">开箱</button>
+      </div>
+    </div>
+
+    <div class="panel-box">
+      <div class="panel-title">开箱结果 <span class="panel-sub">掉落表：2026-09-22 维护后</span></div>
+      ${res}
+    </div>`;
+
+  const bind = (id, fn) => { const el = $(id); if (el) el.addEventListener('click', fn); };
+  bind('boxOpenBtn', boxOpen);
+  document.querySelectorAll('#wboxPanel button[data-box-level]').forEach(b =>
+    b.addEventListener('click', () => { boxLevel = b.dataset.boxLevel; renderBox(); }));
+  document.querySelectorAll('#wboxPanel button[data-box-sub]').forEach(b =>
+    b.addEventListener('click', () => { boxSub = b.dataset.boxSub; renderBox(); }));
+}
+
+/* ============================================================
+ * 顶部活动导航（官网「中奖概率」页的活动列表）
+ * ============================================================ */
+/* 活动列表（顶部胶囊）。目前 5 个活动都已实现；
+   以后加新活动：先在 ACTIVITIES 里登记，再在 selectActivity 里接上对应面板（isXxx 分支） */
+const ACTIVITIES = ['徽记卡', '能力随机卡', '周宝箱', '闪耀DJ莱克丝', '华丽DJ杰德'];
+
+const actsEl = $('acts');
+const layoutEl = document.querySelector('.layout');
+let currentAct = null;
+
+function renderActivities() {
+  actsEl.innerHTML = ACTIVITIES
+    .map(name => `<button class="act" data-act="${name}">${name}</button>`)
+    .join('');
+}
+
+function selectActivity(name) {
+  currentAct = name;
+  actsEl.querySelectorAll('.act').forEach(b =>
+    b.classList.toggle('active', b.dataset.act === name));
+
+  const isPool = POOL_ACTS.includes(name);  // 单抽/10抽/50抽概率池（闪耀DJ莱克丝 / 华丽DJ杰德）
+  const isHjk = name === '徽记卡';         // 合成系统
+  const isAbil = name === '能力随机卡';    // 超级能力加强包随机卡
+  const isWbox = name === '周宝箱';        // 免费开箱
+
+  layoutEl.style.display = isPool ? '' : 'none';
+  $('hjkPanel').hidden = !isHjk;
+  $('abilPanel').hidden = !isAbil;
+  $('wboxPanel').hidden = !isWbox;
+
+  if (isPool) {
+    // 每个概率池活动有独立的池子与累计统计
+    currentPoolAct = name;
+    usePools(name);
+    useCum(name);
+    ensureLegendKeys();
+    refreshPoolUI();
+    clearDrawResults();
+  }
+  if (isHjk) renderHjk();
+  if (isAbil) renderAbil();
+  if (isWbox) renderBox();
+}
+
+actsEl.addEventListener('click', e => {
+  const btn = e.target.closest('.act');
+  if (!btn || btn.dataset.act === currentAct) return;  // 已选中则不动
+  selectActivity(btn.dataset.act);
+});
+
+/* ---- 初始化 ---- */
+usePools(currentPoolAct);
+useCum(currentPoolAct);
+ensureLegendKeys();
+refreshPoolUI();
+renderWallet();
+updateDrawCostLabels();
+renderActivities();
+selectActivity(ACTIVITIES[0]);  // 默认选中第一个活动
+</script>
+</body>
+</html>
