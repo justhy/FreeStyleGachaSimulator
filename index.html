@@ -1172,7 +1172,7 @@ function renderStats() {
 }
 
 /* ---- 本次摘要 ---- */
-function renderSummary(n, results) {
+function renderSummary(n, results, gained) {
   const q = { 传说: 0, 唯一: 0, 高级: 0, 普通: 0 };
   const rareMap = new Map();
   for (const r of results) {
@@ -1193,7 +1193,8 @@ function renderSummary(n, results) {
   } else {
     hits = '　<span class="none-rare">未出稀有，再接再厉</span>';
   }
-  $('summary').innerHTML = `本次 ${n} 抽：${parts}${hits}`;
+  const pointTxt = gained ? `　· 积分 +<b>${fmtNum(gained)}</b>（已入账）` : '';
+  $('summary').innerHTML = `本次 ${n} 抽：${parts}${hits}${pointTxt}`;
 }
 
 /* ---- 结果卡片 ---- */
@@ -1281,6 +1282,11 @@ async function draw(n) {
   const pool = n === 1 ? pools.single : pools.multi;
   const results = drawFrom(pool, n);
 
+  // 抽到的「积分」立即入账（与周宝箱一致）
+  let gained = 0;
+  for (const r of results) if (r.name === '积分') gained += Number(r.amount) || 0;
+  if (gained) { wallet.point += gained; saveWallet(); renderWallet(); }
+
   cum.total += n;
   cum.couponSpent = (cum.couponSpent || 0) + cost;
   for (const r of results) {
@@ -1290,7 +1296,7 @@ async function draw(n) {
   saveCum();
 
   renderStats();
-  renderSummary(n, results);
+  renderSummary(n, results, gained);
   renderGrid(results, true);
 
   busy = false;
