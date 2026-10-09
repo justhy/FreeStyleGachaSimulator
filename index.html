@@ -2265,9 +2265,9 @@ function renderBox() {
   const bind = (id, fn) => { const el = $(id); if (el) el.addEventListener('click', fn); };
   bind('boxOpenBtn', boxOpen);
   document.querySelectorAll('#wboxPanel button[data-box-level]').forEach(b =>
-    b.addEventListener('click', () => { boxLevel = b.dataset.boxLevel; renderBox(); }));
+    b.addEventListener('click', () => { boxLevel = b.dataset.boxLevel; boxLast = null; renderBox(); }));
   document.querySelectorAll('#wboxPanel button[data-box-sub]').forEach(b =>
-    b.addEventListener('click', () => { boxSub = b.dataset.boxSub; renderBox(); }));
+    b.addEventListener('click', () => { boxSub = b.dataset.boxSub; boxLast = null; renderBox(); }));
 }
 
 /* ============================================================
