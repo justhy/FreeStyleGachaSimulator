@@ -21,6 +21,12 @@
 
 纯静态站点，**无需构建、无需后端**。所有资源都是相对路径，放在子目录也能跑。
 
+### 在线访问（GitHub Pages）
+
+<https://justhy.github.io/FreeStyleGachaSimulator/>
+
+推送到 `main` 会自动部署（`.github/workflows/deploy-pages.yml`：先跑 `node test.js` 自检，通过后只发布 `index.html` + `img/` + `favicon.ico`）；也可在仓库 Actions 页面手动触发。
+
 ### 本地打开
 
 直接双击 `index.html`（或拖进浏览器）即可，无需起服务器。

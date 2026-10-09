@@ -34,10 +34,10 @@ jobs:
           echo "站点文件："
           find _site -type f | sort
 
+      # 说明：仓库需先在 Settings → Pages 把 Source 设为「GitHub Actions」（一次性操作）。
+      # 这里不传 enablement: true —— GITHUB_TOKEN 权限不足以自动创建 Pages 站点，会直接报错。
       - name: 配置 Pages
         uses: actions/configure-pages@v5
-        with:
-          enablement: true
 
       - name: 上传站点
         uses: actions/upload-pages-artifact@v3
